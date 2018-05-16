@@ -10,12 +10,16 @@
 		String sender;
 		String msg;
 		String receiver;
-		public MyMessage(String s, String m, String r){ sender = s; msg = m; receiver = r;};
+		Date datesend;
+		public MyMessage(String s, String m, String r, Date d){ sender = s; msg = m; receiver = r; datesend =d;};
 		public String get_msg() { return msg;};
 		public String get_sender() {return sender;};
 		public String get_receiver() {return receiver;};
+		public Date get_date() {return datesend;};
 	};
 
+%>
+<%! int nbuser = 0;
 %>
 	
 <%! List<Users> usrs = new ArrayList(); 
@@ -49,40 +53,44 @@ Real name : <input type="text" name="realname"/> <br>
 
 
 <% } else {
+	nbuser++;
 usrs.add(new Users(session.getAttribute("username").toString(), session.getAttribute("password").toString(), session.getAttribute("realname").toString()));%>
 
 
 <% if(request.getParameter("newmsg")!="" && request.getParameter("newmsg")!=null){
-	msgs.add(new MyMessage(session.getAttribute("username").toString(),request.getParameter("newmsg"), request.getParameter("receiver").toString()));
+	msgs.add(new MyMessage(session.getAttribute("username").toString(),request.getParameter("newmsg"), request.getParameter("receiver"), new Date()));
 }
 %>
 
-Messages so far: <br />
+You are logged in as <%= session.getAttribute("username") %>: <br />
+<hr />
 
-<% for(int i=0; i<msgs.size(); i++){ %>
-<%=msgs.get(i).get_sender() %>:&nbsp; <%= msgs.get(i).get_msg() %> <br />
+Users' list:
+<br />
+Username &nbsp; - &nbsp; Realname  <br />
+<% for(int i=0; i<usrs.size(); i++){ %>
+<%=usrs.get(i).get_user() %> &nbsp; - &nbsp; <%= usrs.get(i).get_realname() %> <br />
 <% } %>
+
+<hr />
+
+Messages to <%= session.getAttribute("username") %>: <br />
+Date &nbsp; - &nbsp; Sender &nbsp; - &nbsp; Recipient &nbsp; - &nbsp; Message <br />
+<% for(int i=0; i<msgs.size(); i++){ if (msgs.get(i).get_receiver().equals(session.getAttribute("username").toString()) ||  msgs.get(i).get_sender().equals(session.getAttribute("username").toString())) { %>
+ <%=msgs.get(i).get_date() %>&nbsp; - &nbsp; <%= msgs.get(i).get_sender() %> &nbsp; - &nbsp; <%=msgs.get(i).get_receiver()%> &nbsp; - &nbsp;  <%=msgs.get(i).get_msg()%><br />
+<% }} %>
 
 <hr />
 <br />
 
-Users' list:
-<br />
-<br />
-<% for(int i=0; i<usrs.size(); i++){ %>
-<%=usrs.get(i).get_user() %>:&nbsp; <%= usrs.get(i).get_realname() %> <br />
-<% } %>
-
-<br />
-<br />
-Add a message:
+Send a message:
 <br />
 
 <form method="post">
 Current user: <%= session.getAttribute("username") %> <br />
-Enter your message <input type="text" name="receiver"/> <br />
-Choose the receiver <input type="text" name="newmsg"/> <br /> 
-<input type="submit" value="Add"/><br />
+Enter your message <input type="text" name="newmsg"/> <br />
+Choose the receiver <input type="text" name="receiver"/> <br /> 
+<input type="submit" value="Send"/><br />
 </form>
 
 
