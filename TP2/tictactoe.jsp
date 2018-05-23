@@ -50,10 +50,20 @@
 	public void solverTicTacToe(int x, int y, String sign){
 		
 		
+		//if(session.getAttribute("username").toString().equals("x") && (nbplay % 2) == 0) || (session.getAttribute("username").toString().equals("y") && (nbplay % 2) != 0 )){
+			 if(tab[x][y].get_charac().equals("") && nbplay <= 9){
+				 tab[x][y].set_charac(sign);
+				 nbplay ++;
+				 
+				 // Faire le checker ici 
+				 
+				 
+				 
+		        }
+		//}
 		
-		 if(tab[x][y].get_charac().equals("") && nbplay <= 9){
-			 tab[x][y].set_charac(sign);
-	        }
+		
+	
 		
 		
 	}
@@ -174,9 +184,17 @@
 			type="text" name="column" /> <br> <input type="submit"
 			value="Play" />
 	</form>
-	
-	<% }%>
- 	<%= session.toString() %>
+		Current Status : <%if ((nbplay % 2) == 0){
+		%> Player X <%}else{ %>
+		Player X <%} %> to play
+		
+			<form method="post">
+			<input type="hidden" id="restart" name="restart" />
+		 <input type="submit"
+			value="Restart" />
+	</form>
+ 	
+		<% } %>
 		<% } %>
 </body>
 </html>
