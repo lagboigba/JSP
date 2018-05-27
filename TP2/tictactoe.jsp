@@ -23,13 +23,11 @@
 	boolean userY = false;
 	int nbuser = 0;
 	int nbplay=0;
-	
-	
-
+	boolean isWin = false;
 %>
 
 	<%! 
-	//List<MyPlays> plays = new ArrayList();
+	
 	MyPlays[][] tab = new MyPlays[3][3];
 	
 	class MyPlays{
@@ -49,22 +47,96 @@
 	};
 	public void solverTicTacToe(int x, int y, String sign){
 		
-		
-		//if(session.getAttribute("username").toString().equals("x") && (nbplay % 2) == 0) || (session.getAttribute("username").toString().equals("y") && (nbplay % 2) != 0 )){
-			 if(tab[x][y].get_charac().equals("") && nbplay <= 9){
+		 if((sign.equals("x") && ((nbplay % 2) == 0)) || (sign.equals("o") && ((nbplay % 2) != 0)) )
+			 if(tab[x][y].get_charac().equals("") && nbplay < 9){
 				 tab[x][y].set_charac(sign);
 				 nbplay ++;
 				 
-				 // Faire le checker ici 
+				  // check les lignes du morpion
+		 		 /* if(tab[0][0].get_charac().equals(sign) &&
+						 tab[0][1].get_charac().equals(sign) &&
+						 tab[0][2].get_charac().equals(sign) ){
 				 
-				 
+				 isWin = true;
 				 
 		        }
-		//}
-		
+				
+				 if(tab[1][0].get_charac().equals(sign) &&
+						 tab[1][1].get_charac().equals(sign) && 
+						 tab[1][2].get_charac().equals(sign) ){
+				 
+				 isWin = true;
+				 
+		        }
+				 
+				 if(tab[2][0].get_charac().equals(sign) &&
+						 tab[2][1].get_charac().equals(sign)&& 
+						 tab[2][2].get_charac().equals(sign) ){
+				 
+				 isWin = true;
+				 
+		        }
+				 
+				 // check les colonnes 
+				 
+				 if(tab[0][0].get_charac().equals(sign) &&
+						 tab[1][0].get_charac().equals(sign)&& 
+						 tab[1][0].get_charac().equals(sign) ){
+				 
+				 isWin = true;
+				 
+		        }
+				 
+				 if(tab[0][1].get_charac().equals(sign) &&
+						 tab[1][1].get_charac().equals(sign)&& 
+						 tab[1][1].get_charac().equals(sign) ){
+				 
+				 isWin = true;
+				 
+		        }
+				 
+				 if(tab[0][2].get_charac().equals(sign) &&
+						 tab[1][2].get_charac().equals(sign)&& 
+						 tab[1][2].get_charac().equals(sign) ){
+				 
+				 isWin = true;
+				 
+		        }
+				 
+				//  check la diagonale 
+				
+				 if(tab[0][0].get_charac().equals(sign) &&
+						 tab[1][1].get_charac().equals(sign)&& 
+						 tab[2][2].get_charac().equals(sign) ){
+				 
+				 isWin = true;
+				 
+		        }
+				
+				// check anti-diagonale
+				
+				 if(tab[0][2].get_charac().equals(sign) &&
+						 tab[1][1].get_charac().equals(sign)&& 
+						 tab[2][0].get_charac().equals(sign) ){
+				 
+				 isWin = true;
+				 
+		        }  */
+				
+		 	 	//  check si c'est égalité
+				
+			
+				
+		}
+		 
+/* 			if(isWin == true || nbplay == 8){
+				
+				nbplay = 0;
+				initTab();
+				isWin = false;
+			}    */
 		
 	
-		
 		
 	}
 	
@@ -77,7 +149,12 @@
 		}
 	}
 %>
-
+	<% if(request.getParameter("restart")!=null){
+		
+		nbplay = 0;
+		initTab();
+	}
+%>
 	<% if(usrs.size() < 2){ %>
 	<% if(request.getParameter("username")!=null){
 		String play="";
@@ -184,11 +261,19 @@
 			type="text" name="column" /> <br> <input type="submit"
 			value="Play" />
 	</form>
+
+		<form method="post" action="tictactoe.jsp">
+			<input type="hidden" id="refresh" name="refresh" /> <input
+				type="submit" value="Refresh" />
+		</form>
+			
+
+	
+	
 		Current Status : <%if ((nbplay % 2) == 0){
 		%> Player X <%}else{ %>
-		Player X <%} %> to play
-		
-			<form method="post">
+		Player Y <%} %> to play
+		<form method="post">
 			<input type="hidden" id="restart" name="restart" />
 		 <input type="submit"
 			value="Restart" />
