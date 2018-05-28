@@ -54,7 +54,9 @@ Real name : <input type="text" name="realname"/> <br>
 
 <% } else {
 	nbuser++;
-usrs.add(new Users(session.getAttribute("username").toString(), session.getAttribute("password").toString(), session.getAttribute("realname").toString()));%>
+	if(!usrs.contains(session.getAttribute("username"))){
+	usrs.add(new Users(session.getAttribute("username").toString(), session.getAttribute("password").toString(), session.getAttribute("realname").toString()));
+	}%>
 
 
 <% if(request.getParameter("newmsg")!="" && request.getParameter("newmsg")!=null){
