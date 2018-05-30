@@ -39,13 +39,21 @@
 
 
 	<% if(request.getParameter("username")!=null){
-		if (request.getParameter("connect") == null){
-			session.setAttribute("username",request.getParameter("username"));
-			session.setAttribute("password",request.getParameter("password"));
-			session.setAttribute("realname",request.getParameter("realname"));
+		if (request.getParameter("connect") == null && request.getParameter("username") != null && request.getParameter("password") != null ){
 			
-			nbuser++;
-			usrs.add(new Users(session.getAttribute("username").toString(), session.getAttribute("password").toString(), session.getAttribute("realname").toString()));
+			
+			
+			Users user = new Users(request.getParameter("username"), request.getParameter("password"), request.getParameter("realname"));
+			
+			if (session.getAttribute("username") == null){
+				
+				session.setAttribute("username",request.getParameter("username"));
+				session.setAttribute("password",request.getParameter("password"));
+				session.setAttribute("realname",request.getParameter("realname"));
+				nbuser++;
+				usrs.add(user);
+			}
+			
 			
 		}else{
 			boolean userFoundList = false;
@@ -99,6 +107,7 @@
 
 	<% if(request.getParameter("newmsg")!="" && request.getParameter("newmsg")!=null){
 	msgs.add(new MyMessage(session.getAttribute("username").toString(),request.getParameter("newmsg"), request.getParameter("receiver"), new Date()));
+
 }
 		
 %>
@@ -111,6 +120,7 @@
 	Users' list:
 	<br /> Username &nbsp; - &nbsp; Realname
 	<br />
+
 	<% for(int i=0; i<usrs.size(); i++){ %>
 	<%=usrs.get(i).get_user() %>
 	&nbsp; - &nbsp;
