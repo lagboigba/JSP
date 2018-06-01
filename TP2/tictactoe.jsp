@@ -24,6 +24,8 @@
 	int nbuser = 0;
 	int nbplay=0;
 	boolean isWin = false;
+	int xWin = 0;
+	int yWin = 0;
 %>
 
 	<%! 
@@ -53,11 +55,13 @@
 				 nbplay ++;
 				 
 				  // check les lignes du morpion
-		 		 /* if(tab[0][0].get_charac().equals(sign) &&
+		 		  if(tab[0][0].get_charac().equals(sign) &&
 						 tab[0][1].get_charac().equals(sign) &&
 						 tab[0][2].get_charac().equals(sign) ){
 				 
 				 isWin = true;
+				 if (sign.equals("x")) { xWin++;}
+				 else if (sign.equals("o")) {yWin++;}
 				 
 		        }
 				
@@ -66,6 +70,8 @@
 						 tab[1][2].get_charac().equals(sign) ){
 				 
 				 isWin = true;
+				 if (sign.equals("x")) { xWin++;}
+				 else if (sign.equals("o")) {yWin++;} 
 				 
 		        }
 				 
@@ -74,7 +80,8 @@
 						 tab[2][2].get_charac().equals(sign) ){
 				 
 				 isWin = true;
-				 
+				 if (sign.equals("x")) { xWin++;}
+				 else if (sign.equals("o")) {yWin++;}				 
 		        }
 				 
 				 // check les colonnes 
@@ -84,7 +91,8 @@
 						 tab[1][0].get_charac().equals(sign) ){
 				 
 				 isWin = true;
-				 
+				 if (sign.equals("x")) { xWin++;}
+				 else if (sign.equals("o")) {yWin++;}				 
 		        }
 				 
 				 if(tab[0][1].get_charac().equals(sign) &&
@@ -92,7 +100,8 @@
 						 tab[1][1].get_charac().equals(sign) ){
 				 
 				 isWin = true;
-				 
+				 if (sign.equals("x")) { xWin++;}
+				 else if (sign.equals("o")) {yWin++;}				 
 		        }
 				 
 				 if(tab[0][2].get_charac().equals(sign) &&
@@ -100,7 +109,8 @@
 						 tab[1][2].get_charac().equals(sign) ){
 				 
 				 isWin = true;
-				 
+				 if (sign.equals("x")) { xWin++;}
+				 else if (sign.equals("o")) {yWin++;}				 
 		        }
 				 
 				//  check la diagonale 
@@ -110,7 +120,8 @@
 						 tab[2][2].get_charac().equals(sign) ){
 				 
 				 isWin = true;
-				 
+				 if (sign.equals("x")) { xWin++;}
+				 else if (sign.equals("o")) {yWin++;}				 
 		        }
 				
 				// check anti-diagonale
@@ -120,21 +131,22 @@
 						 tab[2][0].get_charac().equals(sign) ){
 				 
 				 isWin = true;
-				 
-		        }  */
+				 if (sign.equals("x")) { xWin++;}
+				 else if (sign.equals("o")) {yWin++;}				 
+		        }  
 				
-		 	 	//  check si c'est égalité
+		 	 	//  check si c'est Ã©galitÃ©
 				
 			
 				
 		}
 		 
-/* 			if(isWin == true || nbplay == 8){
+ 			if(isWin == true || nbplay == 8){
 				
 				nbplay = 0;
 				initTab();
 				isWin = false;
-			}    */
+			}    
 		
 	
 		
@@ -226,9 +238,13 @@
 	Y :
 	<%} %>
 	&nbsp;
-	<%=usrs.get(i).get_user() %>
-
-
+	<%=usrs.get(i).get_user() %> has won 
+	<%if(usrs.get(i).get_isX() == true) {%>
+	<%=xWin  %>  times
+	<%} %>
+	<%if(usrs.get(i).get_isX() == false) {%>
+	<%=yWin%>  times
+	<%} %>
 	<br <br />
 		<br
 		<br />
