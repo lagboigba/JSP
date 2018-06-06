@@ -1,0 +1,472 @@
+
+<!DOCTYPE html>
+<html>
+<head> <title> Paint ! </title> </head>
+<body>
+ 
+<script>
+var thick;
+var canvas ;
+var ctx ;
+var imageData ;
+ 
+ 
+// Pour savoir si on arrête de dessiner définitivement la droite
+var booleanLine = false;
+var booleanCircle = false;
+var booleanRect = false;
+var booleanPen = false;
+var booleanFin = false;
+ 
+ 
+// Permet d'update la modif canvas car on clean a chaque fois qu'on dessine
+var savedDraws = [];
+var imgData = null;
+
+
+//Start object
+var startcoord = new Object();
+startcoord.x = 0;
+startcoord.y = 0;
+ 
+//End object
+var endcoord = new Object();
+endcoord.x = 0;
+endcoord.y = 0;
+ 
+//setInterval(drawgameboard,10);
+
+var req;
+
+window.onload = init;
+
+function init(){
+	setInterval(update,3);
+}
+
+function update(){
+	req = new window.XMLHttpRequest();
+	req.open("GET","paint",true);
+	req.send();
+	req.onload = refresh;
+}
+
+function refresh(){
+	//A modifier pour recupérer les formes
+	var shapes = req.responseXML.getElementsByTagName("shapes");
+	var i;
+	var log = document.getElementById("gameboard");
+	// A modifier pour afficher les elements
+	for(i=0;i<msgs.length;i++){
+		n = document.createElement("li");	
+		n.appendChild(document.createTextNode(msgs[i].textContent));
+		log.appendChild(n);
+	}
+}
+/-----------------------------------------------------------------------------------/  
+ 
+function clearboard(){
+  var canvas=document.getElementById("gameboard");
+  if(!canvas.getContext){return;}
+ 
+  //Board
+  var ctx=canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  //A voir s'il ne faut pas envoyer la taille du canvas
+	var req = new window.XMLHttpRequest();
+	req.open("GET","paint?clear=1",true);
+	req.send()
+}
+/-----------------------------------------------------------------------------------/  
+ 
+
+ function restoreCanvas(){
+
+  var ctx=canvas.getContext("2d");
+  var length = savedDraws.length;
+  var img = savedDraws[length-1];
+  if (img != null)
+    ctx.putImageData(img,0,0);
+
+ }
+
+ function saveCanvas(){
+  var canvas=document.getElementById("gameboard");
+  var ctx=canvas.getContext("2d");
+  var img = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  savedDraws.push(img);
+ }
+
+
+
+// Premier point, on recupère le point où on clique
+function getFirstPoint(e){
+  canvas=document.getElementById("gameboard");
+  var ctx=canvas.getContext("2d");
+  var rect = canvas.getBoundingClientRect();
+  var X = e.clientX - rect.left;
+  var Y = e.clientY - rect.top; // Pos Y
+
+  startcoord.x = X;
+  startcoord.y = Y;
+
+  if (document.getElementById('pen').checked) {
+      booleanPen = true;
+      ctx.beginPath();
+      ctx.moveTo(startcoord.x, startcoord.y);
+  }
+
+ else if  (document.getElementById('circ').checked) {
+     booleanCircle = true;
+  }
+ else if  (document.getElementById('rect').checked) {
+  booleanRect = true;
+     
+  }
+ else if (document.getElementById('line').checked) {
+  booleanLine = true;
+  }
+  booleanFin = true;
+  
+}
+ 
+/-----------------------------------------------------------------------------------/  
+ 
+// Dernier point, on recupère le point où on arrrete de cliquer
+function drawingEnd(e){
+   var canvas=document.getElementById("gameboard");
+  if(!canvas.getContext){return;}
+    var ctx=canvas.getContext("2d");
+     
+
+    if(booleanLine){
+        imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        booleanLine = false;
+        drawline(e);
+     
+    }
+ 
+      if(booleanCircle){
+        imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        booleanCircle = false;
+        drawcircle(e);
+     
+    }
+ 
+   
+      if(booleanRect){
+        imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        booleanRect = false;
+        drawrect(e);
+       
+    }
+ 
+      if(booleanPen){
+   
+        booleanPen = false;
+        drawpen(e);
+        ctx.closePath()
+    }
+ booleanFin = false;
+ 
+ 
+}
+ 
+/-----------------------------------------------------------------------------------/  
+ 
+function draw(){
+
+  //ctx.clearRect(0,0,canvas.width,canvas.height);
+  document.getElementById("gameboard").addEventListener("mousedown", getFirstPoint);
+ 
+  if (document.getElementById('pen').checked) {
+    document.getElementById("gameboard").addEventListener("mousemove", drawpen);
+  }
+ else if  (document.getElementById('circ').checked) {
+    document.getElementById("gameboard").addEventListener("mousemove", drawcircle);
+  }
+ else if  (document.getElementById('rect').checked) {
+       document.getElementById("gameboard").addEventListener("mousemove", drawrect);
+  }
+ else if (document.getElementById('line').checked) {
+       document.getElementById("gameboard").addEventListener("mousemove", drawline);
+  }
+    document.getElementById("gameboard").addEventListener("mouseup",  drawingEnd);
+
+}
+ 
+/-----------------------------------------------------------------------------------/        
+    function drawrect(e){
+
+      var canvas=document.getElementById("gameboard");
+    if(!canvas.getContext){return;}
+      var ctx=canvas.getContext("2d");
+        var rect = canvas.getBoundingClientRect();
+     
+  if(!booleanFin){
+    saveCanvas();
+    return;
+  }
+
+if(booleanRect){
+	
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  restoreCanvas();
+
+
+  ctx.strokeStyle = document.getElementById("color").value;
+  ctx.lineWidth= document.getElementById("Thick").value;
+  ctx.beginPath();
+  endcoord.x = e.clientX - rect.left;
+  endcoord.y = e.clientY - rect.top;
+  var length = endcoord.x-startcoord.x
+  var width = endcoord.y - startcoord.x;
+  ctx.rect(startcoord.x,startcoord.y, length,width);
+  ctx.stroke();
+  ctx.closePath();
+  
+  	var req = new window.XMLHttpRequest();
+	req.open("GET","chat?drawrect="startcoord.x+startcoord.y+endcoord.x+endcoord.y,true);
+	req.send()
+    
+ 
+   }
+    }
+ 
+/-----------------------------------------------------------------------------------/  
+ 
+    function drawcircle(e){
+  var canvas=document.getElementById("gameboard");
+    if(!canvas.getContext){return;}
+  var ctx=canvas.getContext("2d");
+  var rect = canvas.getBoundingClientRect();
+     
+  if(!booleanFin){
+    saveCanvas();
+    return;
+  }
+ if(booleanCircle){
+
+
+
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  restoreCanvas();
+
+  ctx.strokeStyle = document.getElementById("color").value;
+  ctx.lineWidth= document.getElementById("Thick").value;
+  ctx.beginPath();
+        // Init radius
+  endcoord.x = e.clientX - rect.left;
+  var rad = endcoord.x-startcoord.x
+ 
+  ctx.arc(startcoord.x,startcoord.y, Math.abs(rad),0,2*Math.PI);
+  ctx.stroke();
+  ctx.closePath();
+      
+           }
+   }
+   
+/-----------------------------------------------------------------------------------/  
+ 
+   // Quand la souris bouge, on dessine la droite automatiquement
+function drawline(e){
+  // Si j'ai mouseup la souris, on arrête de modifier la droite
+  var canvas=document.getElementById("gameboard");
+  var ctx=canvas.getContext("2d");
+  var rect = canvas.getBoundingClientRect();
+ 
+  if(!canvas.getContext){
+  
+    return;
+  }
+ 
+  if(!booleanFin){
+    saveCanvas();
+    return;
+  }
+ 
+  if(booleanLine){
+
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  restoreCanvas();
+
+  // Epaisseur de la droite
+  ctx.strokeStyle = document.getElementById("color").value;
+  ctx.lineWidth= document.getElementById("Thick").value;
+  ctx.beginPath();
+  ctx.moveTo(startcoord.x,startcoord.y);
+ 
+  // Init point de fin
+  endcoord.x = e.clientX - rect.left;
+  endcoord.y = e.clientY - rect.top;
+  ctx.lineTo(endcoord.x, endcoord.y);
+  ctx.stroke();
+  ctx.closePath();
+ 
+      }
+
+ 
+   }
+
+/-----------------------------------------------------------------------------------/  
+ 
+function drawgameboard(){
+  var canvas=document.getElementById("gameboard");
+  if(!canvas.getContext){return;}
+ 
+  draw();
+ 
+  //Board
+  var ctx=canvas.getContext("2d");
+  ctx.fillStyle = "#FFFFFF";
+  ctx.clearRect(0,0,500,500);
+  ctx.fillRect(0,0,500,500);
+ 
+}
+/-----------------------------------------------------------------------------------/  
+ 
+function Increasethick(){
+var Thickness = document.getElementById("Thick");
+        Thickness.value ++;
+      }
+/-----------------------------------------------------------------------------------/  
+     
+function Decreasethick(){
+        var Thickness = document.getElementById("Thick");
+        if (Thickness.value >1){
+        Thickness.value --;
+        } else {
+        Thickness.value = Thickness.value;
+      }      
+}
+ 
+ 
+</script>
+ 
+Paint !
+<br/>
+ 
+ 
+<br/>
+<table border="1">
+  <tr>
+    <th>Canvas</th>
+    <th>Tools</th>
+  </tr>
+  <tr>
+    <th rowspan="4"> <canvas id="gameboard" width="500" height="500" > This is not supported!</canvas> </th>
+    <td><form>
+  <input type="radio" name="tools" id = "pen" value="pencil" onclick="draw();"> pencil<br>
+  <input type="radio" name="tools" id = "line" value="line" onclick="draw();"> line<br>
+  <input type="radio" name="tools" id = "circ" value="circle" onclick="draw();"> circle<br>
+  <input type="radio" name="tools" id = "rect" value="rectangle" onclick="draw();"> rectangle
+</form></td>
+  </tr>
+    <tr>
+    <td>
+    <select id="color">
+  <option value="#000000">Black</option>
+  <option value="#ff0000">Red</option>
+  <option value="#0000ff">Blue</option>
+  <option value="#00ff00">Green</option>
+  <option value="#ffff00">Yellow</option>
+</select>
+</td>
+  </tr>
+    <tr>
+    <td>
+    <input type="text" id="Thick" readonly="readonly" value = 1 >
+    <br>
+    <input type="button" value="-" onclick="Decreasethick();" />
+    <input type="button" value="+" onclick="Increasethick();" />
+    </td>
+  </tr>
+    <tr>
+    <td><input type="button" value="Clear" onclick="clearboard();" /> </td>
+  </tr>
+ 
+</table>
+
+
+</body>
+</html>
+
+
+//////////////////////////
+
+<html>
+<head>
+<title> Live chat! </title>
+</head>
+<body>
+
+<script>
+var req;
+
+window.onload = init;
+
+function init(){
+	setInterval(update,3000);
+}
+
+function update(){
+	req = new window.XMLHttpRequest();
+	req.open("GET","chat",true);
+	req.send();
+	req.onload = refresh;
+}
+
+
+function setname(){
+	var name = document.getElementById("uname").value;
+	var req = new window.XMLHttpRequest();
+	req.open("GET","chat?uname="+name,true);
+	req.send();
+};
+
+function send(){
+	var msg = document.getElementById("msg").value;
+	var req = new window.XMLHttpRequest();
+	req.open("GET","chat?newmsg="+msg,true);
+	req.send();
+	document.getElementById("msg").value = "";
+};
+
+function refresh(){
+	
+	var msgs = req.responseXML.getElementsByTagName("msg");
+	var i;
+	var log = document.getElementById("log");
+	while(log.childNodes[0])
+		log.removeChild(log.childNodes[0]);
+	for(i=0;i<msgs.length;i++){
+		n = document.createElement("li");	
+		n.appendChild(document.createTextNode(msgs[i].textContent));
+		log.appendChild(n);
+	}
+};
+
+function clearChat(){
+	var req = new window.XMLHttpRequest();
+	req.open("GET","chat?clear=1",true);
+	req.send();
+}
+
+</script>
+
+Chat:
+<ol id="log" >
+</ol>
+
+<hr />
+
+<input type="text" id="uname" /> <input type="button" value="Set name" onclick="setname();"/> <br />
+
+<input type="text" id="msg" /> <input type="button" value="Send" onclick="send();" /> <br />
+<input type="button" value="Clear all" onclick="clearChat();" />
+
+<hr/>
+
+</body>
+</html>
+
