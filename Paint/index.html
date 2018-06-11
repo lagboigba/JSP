@@ -53,7 +53,7 @@ function update(){
 
 function refresh(){
 	//A modifier pour recupérer les formes
-	var shapes = req.responseXML.getElementsByTagName("shapes");
+	var shapes = req.responseXML.getElementsByTagName("action");
 	var i;
 	var log = document.getElementById("gameboard");
 	// A modifier pour afficher les elements
@@ -205,6 +205,9 @@ function draw(){
      
   if(!booleanFin){
     saveCanvas();
+	var req = new window.XMLHttpRequest();
+		req.open("GET","paint?drawrect="startcoord.x+startcoord.y+endcoord.x+endcoord.y+ctx.strokeStyle+ctx.lineWidth+true,true);
+	req.send()
     return;
   }
 
@@ -226,7 +229,7 @@ if(booleanRect){
   ctx.closePath();
   
   	var req = new window.XMLHttpRequest();
-	req.open("GET","chat?drawrect="startcoord.x+startcoord.y+endcoord.x+endcoord.y,true);
+	req.open("GET","paint?drawrect="startcoord.x+startcoord.y+endcoord.x+endcoord.y+ctx.strokeStyle+ctx.lineWidth+false,true);
 	req.send()
     
  
@@ -243,6 +246,9 @@ if(booleanRect){
      
   if(!booleanFin){
     saveCanvas();
+		var req = new window.XMLHttpRequest();
+		req.open("GET","paint?drawrect="startcoord.x+startcoord.y+endcoord.x+endcoord.y+ctx.strokeStyle+ctx.lineWidth+true,true);
+	req.send()
     return;
   }
  if(booleanCircle){
@@ -262,7 +268,11 @@ if(booleanRect){
   ctx.arc(startcoord.x,startcoord.y, Math.abs(rad),0,2*Math.PI);
   ctx.stroke();
   ctx.closePath();
-      
+  
+  
+  	var req = new window.XMLHttpRequest();
+	req.open("GET","paint?drawcircle="startcoord.x+startcoord.y+endcoord.x+endcoord.y+ctx.strokeStyle+ctx.lineWidth+false,true);
+	req.send()  
            }
    }
    
@@ -282,6 +292,9 @@ function drawline(e){
  
   if(!booleanFin){
     saveCanvas();
+		var req = new window.XMLHttpRequest();
+		req.open("GET","paint?drawrect="startcoord.x+startcoord.y+endcoord.x+endcoord.y+ctx.strokeStyle+ctx.lineWidth+true,true);
+	req.send()
     return;
   }
  
@@ -304,7 +317,9 @@ function drawline(e){
   ctx.closePath();
  
       }
-
+  	var req = new window.XMLHttpRequest();
+	req.open("GET","paint?drawcircle="startcoord.x+startcoord.y+endcoord.x+endcoord.y+ctx.strokeStyle+ctx.lineWidth+false,true);
+	req.send() 
  
    }
 
@@ -392,8 +407,8 @@ Paint !
 </html>
 
 
-//////////////////////////
 
+<!--
 <html>
 <head>
 <title> Live chat! </title>
@@ -469,4 +484,4 @@ Chat:
 
 </body>
 </html>
-
+-->
