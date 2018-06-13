@@ -46,22 +46,26 @@ function init(){
 
 function update(){
 	req = new window.XMLHttpRequest();
-	req.open("GET","paint",true);
+	req.open("GET","paint/",false);
 	req.send();
 	req.onload = refresh;
 }
 
 function refresh(){
 	//A modifier pour recup√©rer les formes
-	var shapes = req.responseXML.getElementsByTagName("action");
-	var i;
+	console.log(req);
+	console.log(req.response);
+	navigatesNodesXML(req);
+/* 	var i;
 	var log = document.getElementById("gameboard");
 	// A modifier pour afficher les elements
 	for(i=0;i<msgs.length;i++){
 		n = document.createElement("li");	
 		n.appendChild(document.createTextNode(msgs[i].textContent));
 		log.appendChild(n);
-	}
+	} */
+	
+	document.getElementById("xmlxml").innerHTML = req.responseXML;
 }
 /-----------------------------------------------------------------------------------/  
  
@@ -110,13 +114,8 @@ function getFirstPoint(e){
   startcoord.x = X;
   startcoord.y = Y;
 
-  if (document.getElementById('pen').checked) {
-      booleanPen = true;
-      ctx.beginPath();
-      ctx.moveTo(startcoord.x, startcoord.y);
-  }
 
- else if  (document.getElementById('circ').checked) {
+ if  (document.getElementById('circ').checked) {
      booleanCircle = true;
   }
  else if  (document.getElementById('rect').checked) {
@@ -161,12 +160,7 @@ function drawingEnd(e){
        
     }
  
-      if(booleanPen){
-   
-        booleanPen = false;
-        drawpen(e);
-        ctx.closePath()
-    }
+ 
  booleanFin = false;
  
  
@@ -179,10 +173,8 @@ function draw(){
   //ctx.clearRect(0,0,canvas.width,canvas.height);
   document.getElementById("gameboard").addEventListener("mousedown", getFirstPoint);
  
-  if (document.getElementById('pen').checked) {
-    document.getElementById("gameboard").addEventListener("mousemove", drawpen);
-  }
- else if  (document.getElementById('circ').checked) {
+ 
+ if  (document.getElementById('circ').checked) {
     document.getElementById("gameboard").addEventListener("mousemove", drawcircle);
   }
  else if  (document.getElementById('rect').checked) {
@@ -206,7 +198,7 @@ function draw(){
   if(!booleanFin){
     saveCanvas();
 	var req = new window.XMLHttpRequest();
-		req.open("GET","paint?drawrect="startcoord.x+startcoord.y+endcoord.x+endcoord.y+ctx.strokeStyle+ctx.lineWidth+true,true);
+		req.open("GET","paint?rect=line&startX="+startcoord.x+"&startY="+startcoord.y+"&endX="+endcoord.x+"&endY="+endcoord.y+"&strokeStyle="+ctx.strokeStyle+"&lineWidth="+ctx.lineWidth+"&endDraw=false",true);
 	req.send()
     return;
   }
@@ -229,7 +221,7 @@ if(booleanRect){
   ctx.closePath();
   
   	var req = new window.XMLHttpRequest();
-	req.open("GET","paint?drawrect="startcoord.x+startcoord.y+endcoord.x+endcoord.y+ctx.strokeStyle+ctx.lineWidth+false,true);
+	req.open("GET","paint?rect=line&startX="+startcoord.x+"&startY="+startcoord.y+"&endX="+endcoord.x+"&endY="+endcoord.y+"&strokeStyle="+ctx.strokeStyle+"&lineWidth="+ctx.lineWidth+"&endDraw=false",true);
 	req.send()
     
  
@@ -247,7 +239,7 @@ if(booleanRect){
   if(!booleanFin){
     saveCanvas();
 		var req = new window.XMLHttpRequest();
-		req.open("GET","paint?drawrect="startcoord.x+startcoord.y+endcoord.x+endcoord.y+ctx.strokeStyle+ctx.lineWidth+true,true);
+		req.open("GET","paint?type=circle&startX="+startcoord.x+"&startY="+startcoord.y+"&endX="+endcoord.x+"&endY="+endcoord.y+"&strokeStyle="+ctx.strokeStyle+"&lineWidth="+ctx.lineWidth+"&endDraw=true",true);
 	req.send()
     return;
   }
@@ -271,7 +263,7 @@ if(booleanRect){
   
   
   	var req = new window.XMLHttpRequest();
-	req.open("GET","paint?drawcircle="startcoord.x+startcoord.y+endcoord.x+endcoord.y+ctx.strokeStyle+ctx.lineWidth+false,true);
+	req.open("GET","paint?type=circle&startX="+startcoord.x+"&startY="+startcoord.y+"&endX="+endcoord.x+"&endY="+endcoord.y+"&strokeStyle="+ctx.strokeStyle+"&lineWidth="+ctx.lineWidth+"&endDraw=false",true);
 	req.send()  
            }
    }
@@ -293,7 +285,7 @@ function drawline(e){
   if(!booleanFin){
     saveCanvas();
 		var req = new window.XMLHttpRequest();
-		req.open("GET","paint?drawrect="startcoord.x+startcoord.y+endcoord.x+endcoord.y+ctx.strokeStyle+ctx.lineWidth+true,true);
+		req.open("GET","paint?type=line&startX="+startcoord.x+"&startY="+startcoord.y+"&endX="+endcoord.x+"&endY="+endcoord.y+"&strokeStyle="+ctx.strokeStyle+"&lineWidth="+ctx.lineWidth+"&endDraw=true",true);
 	req.send()
     return;
   }
@@ -318,7 +310,7 @@ function drawline(e){
  
       }
   	var req = new window.XMLHttpRequest();
-	req.open("GET","paint?drawcircle="startcoord.x+startcoord.y+endcoord.x+endcoord.y+ctx.strokeStyle+ctx.lineWidth+false,true);
+	req.open("GET","paint?type=line&startX="+startcoord.x+"&startY="+startcoord.y+"&endX="+endcoord.x+"&endY="+endcoord.y+"&strokeStyle="+ctx.strokeStyle+"&lineWidth="+ctx.lineWidth+"&endDraw=false",true);
 	req.send() 
  
    }
@@ -355,7 +347,172 @@ function Decreasethick(){
       }      
 }
  
- 
+//Initialise la lecture du fichier xml 
+function readXMLfile(){
+
+ var xhttp = new XMLHttpRequest();
+ xhttp.onreadystatechange = function() {
+
+
+     if (this.readyState == 4 && this.status == 200) {
+         navigatesNodesXML(this);
+     }
+ };
+ // C'est ici qu'on met le nom du fichier XML
+
+ xhttp.open("GET", req.responseXML, true);
+ xhttp.send();
+
+}
+
+//Cette fonction permet juste de faire la correspondance nom de la coleur ‡ son code. Car dans le fichier
+//xml du prof, les descriptions des couleurs se font avec leurs noms
+function getColor(nameColor){
+ switch (nameColor) {
+ case 'blue':
+   return "#0000ff";
+   break;
+   case 'red':
+   return "#ff0000";
+   break;
+   case 'green':
+   return "#00ff00";
+   break;
+   case 'yellow':
+   return "#ffff00";
+   break;
+ default:
+   return "#000000";
+}
+
+}
+
+
+ function getColorByName(codeColor){
+ switch (codeColor) {
+ case '#0000ff':
+   return "blue";
+   break;
+   case "#ff0000":
+   return 'red';
+   break;
+   case "#00ff00":
+   return 'green';
+   break;
+   case "#ffff00":
+   return 'yellow';
+   break;
+ default:
+   return "black";
+}
+
+}
+
+
+//Permet de parcourir le xml 
+function navigatesNodesXML(xml){
+  var canvas=document.getElementById("gameboard");
+  console.log(xml);
+	console.log(xml.response);
+   if(!canvas.getContext){return;}
+     var ctx=canvas.getContext("2d");
+     var rect = canvas.getBoundingClientRect();
+
+ var x, y, xmlDoc;
+ xmlDoc = xml.response;
+ var i=0;
+ var expr;
+ // Parcours le dom
+ do {
+
+   if(!restoreXMLBool){
+
+     x = xmlDoc.getElementsByTagName("action")[i];
+   }else{
+
+     var xmlDocConvert;
+     console.log("coco");
+     parserXML = new DOMParser();
+     xmlDoc = parserXML.parseFromString(xml,"text/xml");
+     x = xmlDoc.children[0].children[i];
+     //xmlDocConvert = xmlDoc.getElementsByTagName("action")[i];
+     console.log(x);
+   }
+   
+
+   // get l'attribut type pour avoir le type de dessin
+   expr = x.getAttribute("type");
+   startcoord.x = x.getAttribute("startX");
+   startcoord.y = x.getAttribute("startY");
+
+   ctx.strokeStyle = getColor(x.getAttribute("strokeStyle"));
+   ctx.lineWidth = x.getAttribute("lineWidth");
+   ctx.beginPath();
+
+   endcoord.x = x.getAttribute("endX");
+   endcoord.y = x.getAttribute("endY");
+   
+
+   switch (expr) {
+
+     case 'rect':
+
+       var length = endcoord.x  - startcoord.x
+       var width = endcoord.y - startcoord.x;
+
+       ctx.rect(startcoord.x,startcoord.y, length,width);
+       ctx.stroke();
+       ctx.closePath();
+
+       // Safe draw
+       saveDraw();
+
+      break;
+
+     case 'cycle':
+
+     
+ var rad = Math.sqrt(Math.pow((endcoord.y - startcoord.y),2) + Math.pow((endcoord.x - startcoord.x),2));
+
+ ctx.arc(startcoord.x,startcoord.y, Math.abs(rad),0,2*Math.PI);
+
+ ctx.stroke();
+ ctx.closePath();
+ saveDraw();
+     break;
+   case 'line':
+
+     ctx.moveTo(startcoord.x,startcoord.y);
+     ctx.lineTo(endcoord.x, endcoord.y);
+     ctx.stroke();
+     ctx.closePath();
+     saveDraw();
+       break;
+   default:
+
+     //Dans la balise action de PEN, il y a beaucoup de balise fils, donc Áela va nous permettre de les parcourir
+
+     ctx.moveTo(x.children[0].getAttribute("startX"), x.children[0].getAttribute("startY"));
+     ctx.beginPath();
+     for(var j =1; j <= x.childElementCount-1; j++){
+     
+
+     ctx.lineTo(x.children[j].getAttribute("x"), x.children[j].getAttribute("y"));
+     ctx.stroke();
+
+     }
+     
+     ctx.closePath()
+     saveDraw();
+}
+   // Ajoute x qui contient la balise dans le tableau
+   if(!restoreXMLBool){
+   savedDrawsXml.push(x.outerHTML);
+ }
+   i = i + 1;
+ } while (typeof x != 'undefined');
+ }
+
 </script>
  
 Paint !
@@ -402,7 +559,11 @@ Paint !
  
 </table>
 
+<hr/>
+<div id="xmlxml">
 
+
+</div>
 </body>
 </html>
 
@@ -481,7 +642,10 @@ Chat:
 <input type="button" value="Clear all" onclick="clearChat();" />
 
 <hr/>
+<div id="xmlxml">
 
+
+</div>
 </body>
 </html>
 -->
