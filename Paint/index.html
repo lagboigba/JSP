@@ -68,9 +68,9 @@ function update(){
 
 function refresh(){
 	//console.log(req);
-	console.log(req.response);
+	/*console.log(req.response);
   console.log(req.responseXML.documentElement);
-  console.log(req.responseXML);
+  console.log(req.responseXML);*/
 	//navigatesNodesXML(req);
 
 
@@ -88,13 +88,18 @@ for (index=0;index<nbrElement;index++) {
   var currentNode = XMLHttpRequest.responseXML.documentElement.childNodes[index]
   */
 //var actions = req.response.getElementsByTagName("action");
-var docXML= req.response;
-var actions = test.getElementsByTagName("action");
+//var docXML= req.response;
+//var actions = test.getElementsByTagName("action");
 //var actions = Ext.DomQuery.selectValue('action', docXML);
 //console.log(actions);
-console.log(actions);
-console.log(req.response);
-console.log(test.getElementsByTagName("action"));
+/*console.log(actions);
+console.log(req.response);*/
+//console.log(test.getElementsByTagName("action"));
+parser = new DOMParser();
+var xmlDoc = parser.parseFromString(req.response,"text/xml");
+console.log(xmlDoc);
+var actions = xmlDoc.getElementsByTagName("action");
+
 
 for(i=0;i<actions.length;i++){
     expr = actions[i].getAttribute("type");
