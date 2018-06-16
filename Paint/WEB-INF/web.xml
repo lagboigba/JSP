@@ -1,4 +1,4 @@
-<web-app>  "C:/Program Files/Apache Software Foundation/Tomcat 7.0/webapps/Paint/index.html"
+<web-app>
   
 <servlet>  
 <servlet-name>paint</servlet-name>  

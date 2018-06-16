@@ -46,18 +46,15 @@ public class Paint extends HttpServlet {
 
 		HttpSession s = req.getSession();
 
-		System.out.println(req.getParameter("type"));
-
-		if (req.getParameter("type") != null) {
-			form1 = new Form(req.getParameter("type"), req.getParameter("startX"), req.getParameter("startY"),
+		
+		form1 = new Form(req.getParameter("type"), req.getParameter("startX"), req.getParameter("startY"),
 					req.getParameter("strokeStyle"), req.getParameter("lineWidth"), req.getParameter("endX"),
 					req.getParameter("endY"));
 
-			if (req.getParameter("endDraw").equals("true")) {
+		if (req.getParameter("endDraw").equals("true")) {
 				figures.add(form1);
 			}
 
-		}
 
 		pw.println("<picture>");
 		for (int i = 0; i < figures.size(); i++) {

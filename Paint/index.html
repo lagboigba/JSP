@@ -41,28 +41,61 @@ var req;
 window.onload = init;
 
 function init(){
-	setInterval(update,3);
+	setInterval(update,30);
 }
 
 function update(){
 	req = new window.XMLHttpRequest();
-	req.open("GET","paint/",false);
+	req.open("GET","paint",true);
 	req.send();
 	req.onload = refresh;
 }
+  function StringToXMLDom(string){
+  var xmlDoc=null;
+  if (window.DOMParser)
+  {
+    parser=new DOMParser();
+    xmlDoc=parser.parseFromString(string,"text/xml");
+  }
+  else // Internet Explorer
+  {
+    xmlDoc=new ActiveXObject("Microsoft.XMLDOM");
+    xmlDoc.async="false";
+    xmlDoc.loadXML(string);
+  }
+  return xmlDoc;
+}
 
 function refresh(){
-	//A modifier pour recupérer les formes
-	console.log(req);
+	//console.log(req);
 	console.log(req.response);
+  console.log(req.responseXML.documentElement);
+  console.log(req.responseXML);
 	//navigatesNodesXML(req);
+
+
+var test = StringToXMLDom(req.response);
+
 	 var canvas=document.getElementById("gameboard");
          if(!canvas.getContext){return;}
          var ctx=canvas.getContext("2d");
          var rect = canvas.getBoundingClientRect();         
          var i=0;
          var expr;
-var actions = req.responseXML.getElementsByTagName("action");
+
+/*         var nbrElement = XMLHttpRequest.responseXML.documentElement.childNodes.length
+for (index=0;index<nbrElement;index++) {
+  var currentNode = XMLHttpRequest.responseXML.documentElement.childNodes[index]
+  */
+//var actions = req.response.getElementsByTagName("action");
+var docXML= req.response;
+var actions = test.getElementsByTagName("action");
+//var actions = Ext.DomQuery.selectValue('action', docXML);
+//console.log(actions);
+console.log(actions);
+console.log(req.response);
+console.log(test.getElementsByTagName("action"));
+
 for(i=0;i<actions.length;i++){
     expr = actions[i].getAttribute("type");
     startcoord.x = actions[i].getAttribute("startX");
@@ -249,7 +282,7 @@ function draw(){
   if(!booleanFin){
     saveCanvas();
 	var req = new window.XMLHttpRequest();
-		req.open("GET","paint?type=rect&startX="+startcoord.x+"&startY="+startcoord.y+"&endX="+endcoord.x+"&endY="+endcoord.y+"&strokeStyle="+ctx.strokeStyle+"&lineWidth="+ctx.lineWidth+"&endDraw=false",true);
+		req.open("GET","paint?type=rect&startX="+startcoord.x+"&startY="+startcoord.y+"&endX="+endcoord.x+"&endY="+endcoord.y+"&strokeStyle="+ctx.strokeStyle+"&lineWidth="+ctx.lineWidth+"&endDraw=true",true);
 	req.send()
     return;
   }
