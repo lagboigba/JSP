@@ -55,17 +55,68 @@ function refresh(){
 	//A modifier pour recupérer les formes
 	console.log(req);
 	console.log(req.response);
-	navigatesNodesXML(req);
-/* 	var i;
-	var log = document.getElementById("gameboard");
-	// A modifier pour afficher les elements
-	for(i=0;i<msgs.length;i++){
-		n = document.createElement("li");	
-		n.appendChild(document.createTextNode(msgs[i].textContent));
-		log.appendChild(n);
-	} */
-	
-	document.getElementById("xmlxml").innerHTML = req.responseXML;
+	//navigatesNodesXML(req);
+	 var canvas=document.getElementById("gameboard");
+         if(!canvas.getContext){return;}
+         var ctx=canvas.getContext("2d");
+         var rect = canvas.getBoundingClientRect();         
+         var i=0;
+         var expr;
+var actions = req.responseXML.getElementsByTagName("action");
+for(i=0;i<actions.length;i++){
+    expr = actions[i].getAttribute("type");
+    startcoord.x = actions[i].getAttribute("startX");
+    startcoord.y = actions[i].getAttribute("startY");
+
+    ctx.strokeStyle = getColor(actions[i].getAttribute("strokeStyle"));
+    ctx.lineWidth = actions[i].getAttribute("lineWidth");
+
+    endcoord.x = actions[i].getAttribute("endX");
+    endcoord.y = actions[i].getAttribute("endY");
+
+        switch (expr) {
+
+      case 'rect':
+
+        var length = endcoord.x  - startcoord.x
+        var width = endcoord.y - startcoord.y;
+
+        ctx.beginPath();
+        ctx.rect(startcoord.x,startcoord.y, length,width);
+        ctx.stroke();
+        ctx.closePath();
+
+        // Safe draw
+        //saveDraw();
+
+       break;
+
+      case 'circle':
+        ctx.beginPath();
+      
+  var rad = Math.sqrt(Math.pow((endcoord.y - startcoord.y),2) + Math.pow((endcoord.x - startcoord.x),2));
+ 
+  ctx.arc(startcoord.x,startcoord.y, Math.abs(rad),0,2*Math.PI);
+
+  ctx.stroke();
+  ctx.closePath();
+  //saveDraw();
+      break;
+    case 'line':
+
+        ctx.beginPath();
+      ctx.moveTo(startcoord.x,startcoord.y);
+      ctx.lineTo(endcoord.x, endcoord.y);
+      ctx.stroke();
+      ctx.closePath();
+     // saveDraw();
+        break;
+    default:
+      //saveDraw();
+}
+
+  }
+
 }
 /-----------------------------------------------------------------------------------/  
  
@@ -198,7 +249,7 @@ function draw(){
   if(!booleanFin){
     saveCanvas();
 	var req = new window.XMLHttpRequest();
-		req.open("GET","paint?rect=line&startX="+startcoord.x+"&startY="+startcoord.y+"&endX="+endcoord.x+"&endY="+endcoord.y+"&strokeStyle="+ctx.strokeStyle+"&lineWidth="+ctx.lineWidth+"&endDraw=false",true);
+		req.open("GET","paint?type=rect&startX="+startcoord.x+"&startY="+startcoord.y+"&endX="+endcoord.x+"&endY="+endcoord.y+"&strokeStyle="+ctx.strokeStyle+"&lineWidth="+ctx.lineWidth+"&endDraw=false",true);
 	req.send()
     return;
   }
@@ -215,13 +266,13 @@ if(booleanRect){
   endcoord.x = e.clientX - rect.left;
   endcoord.y = e.clientY - rect.top;
   var length = endcoord.x-startcoord.x
-  var width = endcoord.y - startcoord.x;
+  var width = endcoord.y - startcoord.y;
   ctx.rect(startcoord.x,startcoord.y, length,width);
   ctx.stroke();
   ctx.closePath();
   
   	var req = new window.XMLHttpRequest();
-	req.open("GET","paint?rect=line&startX="+startcoord.x+"&startY="+startcoord.y+"&endX="+endcoord.x+"&endY="+endcoord.y+"&strokeStyle="+ctx.strokeStyle+"&lineWidth="+ctx.lineWidth+"&endDraw=false",true);
+	req.open("GET","paint?type=rect&startX="+startcoord.x+"&startY="+startcoord.y+"&endX="+endcoord.x+"&endY="+endcoord.y+"&strokeStyle="+ctx.strokeStyle+"&lineWidth="+ctx.lineWidth+"&endDraw=false",true);
 	req.send()
     
  
@@ -346,7 +397,7 @@ function Decreasethick(){
         Thickness.value = Thickness.value;
       }      
 }
- 
+ /*
 //Initialise la lecture du fichier xml 
 function readXMLfile(){
 
@@ -425,19 +476,8 @@ function navigatesNodesXML(xml){
  // Parcours le dom
  do {
 
-   if(!restoreXMLBool){
 
      x = xmlDoc.getElementsByTagName("action")[i];
-   }else{
-
-     var xmlDocConvert;
-     console.log("coco");
-     parserXML = new DOMParser();
-     xmlDoc = parserXML.parseFromString(xml,"text/xml");
-     x = xmlDoc.children[0].children[i];
-     //xmlDocConvert = xmlDoc.getElementsByTagName("action")[i];
-     console.log(x);
-   }
    
 
    // get l'attribut type pour avoir le type de dessin
@@ -465,11 +505,11 @@ function navigatesNodesXML(xml){
        ctx.closePath();
 
        // Safe draw
-       saveDraw();
+       //saveDraw();
 
       break;
 
-     case 'cycle':
+     case 'circle':
 
      
  var rad = Math.sqrt(Math.pow((endcoord.y - startcoord.y),2) + Math.pow((endcoord.x - startcoord.x),2));
@@ -478,7 +518,7 @@ function navigatesNodesXML(xml){
 
  ctx.stroke();
  ctx.closePath();
- saveDraw();
+ //saveDraw();
      break;
    case 'line':
 
@@ -486,7 +526,7 @@ function navigatesNodesXML(xml){
      ctx.lineTo(endcoord.x, endcoord.y);
      ctx.stroke();
      ctx.closePath();
-     saveDraw();
+     //saveDraw();
        break;
    default:
 
@@ -503,16 +543,14 @@ function navigatesNodesXML(xml){
      }
      
      ctx.closePath()
-     saveDraw();
+     //saveDraw();
 }
    // Ajoute x qui contient la balise dans le tableau
-   if(!restoreXMLBool){
-   savedDrawsXml.push(x.outerHTML);
- }
+
    i = i + 1;
  } while (typeof x != 'undefined');
- }
-
+  }
+  */
 </script>
  
 Paint !
