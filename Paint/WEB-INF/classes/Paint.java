@@ -49,6 +49,7 @@ public class Paint extends HttpServlet {
 		HttpSession s = req.getSession();
 		String xmlSend ="";
 		String xmlLive ="";
+		Set<Form> hs = new HashSet<>();
 		System.out.println(req.getParameter("type"));
 		if (req.getParameter("type") != null) {
 			form1 = new Form(req.getParameter("type"), req.getParameter("startX"), req.getParameter("startY"),
@@ -57,23 +58,22 @@ public class Paint extends HttpServlet {
 			System.out.println(req.getParameter("endDraw")+"??????????????????????????");
 			if (req.getParameter("endDraw").equals("true")) {
 				figures.add(form1);
-			}else {
-				
-				form1 = null;
 			}
 
 		}
 		
-
+		hs.addAll(figures);
+		figures.clear();
+		figures.addAll(hs);
+		
 		pw.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 		pw.println("<picture>");
 		if(!figures.isEmpty())
 		for (int i = 0; i < figures.size(); i++) {
 			pw.println(figures.get(i).xml());
 		}
-		if(form1 != null) {
 		pw.println(form1.xml());
-		}
+		
 		pw.println("</picture>");
 		
 		pw.flush();
