@@ -40,13 +40,15 @@
 		window.onload = init;
 
 		function init() {
-			setInterval(update, 10);
+			setInterval(update, 300);
 		}
 
 		function update(){
 			req = new window.XMLHttpRequest();
 			req.open("GET","paint",true);
 			req.send();
+			var ctx=canvas.getContext("2d");
+			  ctx.clearRect(0, 0, canvas.width, canvas.height);
 			req.onload = refresh;
 		}
 		  function StringToXMLDom(string){
@@ -77,6 +79,7 @@
 		         var rect = canvas.getBoundingClientRect();         
 		         var i=0;
 		         var expr;
+		      
 		/*         var nbrElement = XMLHttpRequest.responseXML.documentElement.childNodes.length
 		for (index=0;index<nbrElement;index++) {
 		  var currentNode = XMLHttpRequest.responseXML.documentElement.childNodes[index]
@@ -91,6 +94,7 @@
 		console.log(test.getElementsByTagName("action"));
 		//alert(req.response);
 		if(docXML != null)
+			
 		for(i=0;i<actions.length;i++){
 		    expr = actions[i].getAttribute("type");
 		    startcoord.x = actions[i].getAttribute("startX");
@@ -199,6 +203,7 @@
 		// Dernier point, on recupère le point où on arrrete de cliquer
 		function drawingEnd(e) {
 			var canvas = document.getElementById("gameboard");
+			var req = new window.XMLHttpRequest();
 			if (!canvas.getContext) {
 				return;
 			}
@@ -208,21 +213,49 @@
 				imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 				booleanLine = false;
 				drawline(e);
-
+				req.open("GET",
+						"paint?endDraw=true&strokeStyle="
+								+ getColorByName(document
+										.getElementById("color").value)
+								+ "&lineWidth="
+								+ document.getElementById("Thick").value
+								+ "&type=line&startX=" + startcoord.x
+								+ "&startY=" + startcoord.y + "&endX="
+								+ endcoord.x + "&endY=" +endcoord.y, true);
+				req.send()
 			}
 
 			if (booleanCircle) {
 				imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 				booleanCircle = false;
 				drawcircle(e);
-
+				req.open("GET",
+						"paint?endDraw=true&strokeStyle="
+								+ getColorByName(document
+										.getElementById("color").value)
+								+ "&lineWidth="
+								+ document.getElementById("Thick").value
+								+ "&type=circle&startX=" + startcoord.x
+								+ "&startY=" + startcoord.y + "&endX="
+								+ endcoord.x + "&endY=" + endcoord.y, true);
+				req.send()
 			}
 
 			if (booleanRect) {
 				imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 				booleanRect = false;
 				drawrect(e);
-
+				
+				req.open("GET",
+						"paint?endDraw=true&strokeStyle="
+								+ getColorByName(document
+										.getElementById("color").value)
+								+ "&lineWidth="
+								+ document.getElementById("Thick").value
+								+ "&type=rect&startX=" + startcoord.x
+								+ "&startY=" + startcoord.y + "&endX="
+								+ endcoord.x + "&endY=" + endcoord.y, true);
+				req.send()
 			}
 
 			booleanFin = false;
@@ -264,17 +297,7 @@
 
 			if (!booleanFin) {
 				saveCanvas();
-				var req = new window.XMLHttpRequest();
-				req.open("GET",
-						"paint?endDraw=true&strokeStyle="
-								+ getColorByName(document
-										.getElementById("color").value)
-								+ "&lineWidth="
-								+ document.getElementById("Thick").value
-								+ "&type=rect&startX=" + startcoord.x
-								+ "&startY=" + startcoord.y + "&endX="
-								+ endcoord.x + "&endY=" + endcoord.y, true);
-				req.send()
+				
 				return;
 			}
 
@@ -321,17 +344,7 @@
 
 			if (!booleanFin) {
 				saveCanvas();
-				var req = new window.XMLHttpRequest();
-				req.open("GET",
-						"paint?endDraw=true&strokeStyle="
-								+ getColorByName(document
-										.getElementById("color").value)
-								+ "&lineWidth="
-								+ document.getElementById("Thick").value
-								+ "&type=circle&startX=" + startcoord.x
-								+ "&startY=" + startcoord.y + "&endX="
-								+ endcoord.x + "&endY=" + endcoord.y, true);
-				req.send()
+
 				return;
 			}
 			if (booleanCircle) {
@@ -381,19 +394,8 @@
 
 			if (!booleanFin) {
 				saveCanvas();
-				var req = new window.XMLHttpRequest();
-				console.log(document.getElementById("color").value
-						+ "+++++++++++++++++++++++++++++++++++++")
-				req.open("GET",
-						"paint?endDraw=true&strokeStyle="
-								+ getColorByName(document
-										.getElementById("color").value)
-								+ "&lineWidth="
-								+ document.getElementById("Thick").value
-								+ "&type=line&startX=" + startcoord.x
-								+ "&startY=" + startcoord.y + "&endX="
-								+ endcoord.x + "&endY=" +endcoord.y, true);
-				req.send()
+				//var req = new window.XMLHttpRequest();
+
 				return;
 			}
 

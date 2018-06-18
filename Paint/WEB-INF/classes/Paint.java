@@ -50,12 +50,12 @@ public class Paint extends HttpServlet {
 		String xmlSend ="";
 		String xmlLive ="";
 		Set<Form> hs = new HashSet<>();
-		System.out.println(req.getParameter("type"));
+		System.out.println(figures.size()+"????????????????????????????");
+		System.out.println(req.getParameter("endDraw")+"++++++++++++++++++++++++++++++++++++++");
 		if (req.getParameter("type") != null) {
 			form1 = new Form(req.getParameter("type"), req.getParameter("startX"), req.getParameter("startY"),
 					req.getParameter("strokeStyle"), req.getParameter("lineWidth"), req.getParameter("endX"),
 					req.getParameter("endY"));
-			System.out.println(req.getParameter("endDraw")+"??????????????????????????");
 			if (req.getParameter("endDraw").equals("true")) {
 				figures.add(form1);
 			}
