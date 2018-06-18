@@ -19,7 +19,7 @@ public class Paint extends HttpServlet {
 		private String endY;
 
 		public Form(String type, String startX, String startY, String strokeStyle, String lineWidth, String endX,
-				String EndY) {
+				String endY) {
 			this.type = type;
 			this.startX = startX;
 			this.startY = startY;
@@ -54,7 +54,7 @@ public class Paint extends HttpServlet {
 			form1 = new Form(req.getParameter("type"), req.getParameter("startX"), req.getParameter("startY"),
 					req.getParameter("strokeStyle"), req.getParameter("lineWidth"), req.getParameter("endX"),
 					req.getParameter("endY"));
-
+			System.out.println(req.getParameter("endDraw")+"??????????????????????????");
 			if (req.getParameter("endDraw").equals("true")) {
 				figures.add(form1);
 			}else {
@@ -64,21 +64,7 @@ public class Paint extends HttpServlet {
 
 		}
 		
-		xmlSend +="<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-//		xmlSend +="<picture>";
-//		if(!figures.isEmpty())
-//		for (int i = 0; i < figures.size(); i++) {
-//			xmlSend +=figures.get(i).xml();
-//		}
-//		if(form1 != null) {
-//		xmlSend += form1.xml();
-//		}
-//		xmlSend +="</picture>";
-//		
-//		pw.write(xmlSend);
-//		pw.flush();
-//		pw.close();
-//		xmlSend ="";
+
 		pw.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 		pw.println("<picture>");
 		if(!figures.isEmpty())
@@ -89,7 +75,7 @@ public class Paint extends HttpServlet {
 		pw.println(form1.xml());
 		}
 		pw.println("</picture>");
-		figures = null;
+		
 		pw.flush();
 		pw.close();
 		
