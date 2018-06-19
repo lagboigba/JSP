@@ -55,18 +55,52 @@ public class Pong extends HttpServlet {
 		String xmlSend ="";
 		String xmlLive ="";
 
-				if (req.getParameter("type") == "leftp") {
+				if (req.getParameter("action") == "leftp") {
 					 if(this.p1_px > 8 ){
           				this.p1_px = this.p1_px - 8;
          }
          				else this.p1_px = this.p1_px;
      }
-     if (req.getParameter("type") == "rightp") {
+ }
+     if (req.getParameter("action") == "rightp") {
      	 if(this.p1_px < 500 - 8){
            this.p1_px = this.p1_px + 8;
          }
          else {this.p1_px = this.p1_px;
          }
+     }
+       if (req.getParameter("action") == "upball") {         
+              if (this.bally > 0){
+         this.bally--;
+         }
+         else{
+          this.axe = 0;
+     }
+          }
+       if (req.getParameter("action") == "leftball") {    
+       if ((this.bally <= 500 && this.bally >= 0)  && ( this.ballx >= 0)) { // verifie qu'on est pas au bord
+
+         this.ballx--;
+         }
+         else{
+         this.dir = 1;
+     }
+ }
+        if (req.getParameter("action") == "rightball") {    
+         if ((this.bally <=  500 && this.bally >= 0)  && ( this.ballx >= 0)) { // verifie qu'on est pas au bord
+
+         this.ballx--;
+         }
+         else{
+         this.dir = 1;
+ }
+}
+
+        if (req.getParameter("action") == "downball") {    
+}
+
+
+
 
 
 			State1 = new Form(req.getParameter("type"), req.getParameter("startX"), req.getParameter("startY"),

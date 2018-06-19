@@ -141,14 +141,14 @@
 
          //Player 1
          ctx.fillStyle = "#059F90";
-         ctx.clearRect(player1.px,player1.py,player1.pheigh,player1.pwidth);
-         ctx.fillRect(player1.px,player1.py,player1.pheigh,player1.pwidth);
+         ctx.clearRect(player1.px,player1.py,50,5);
+         ctx.fillRect(player1.px,player1.py,50,5);
          ctx.stroke();
 
          //Player 2
          ctx.fillStyle = "#279890";
-         ctx.clearRect(player2.px,player2.py,player2.pheigh,player2.pwidth);
-         ctx.fillRect(player2.px,player2.py,player2.pheigh,player2.pwidth);
+         ctx.clearRect(player2.px,player2.py,50,5);
+         ctx.fillRect(player2.px,player2.py,50,5);
          ctx.stroke();
          ctx.fillStyle = "black";
          }
@@ -196,7 +196,7 @@
          }
          }*/
          //Rajouter les elements manquants
-         req.open("GET","pong?downball", true); 
+         req.open("GET","pong?action=downball", true); 
 				req.send();
 
          }
@@ -210,19 +210,25 @@
          else{
           axe = 0;
           drawgameboard();
-         }
+         }*/
+          req.open("GET","pong?action = upball", true); 
+		  req.send();
          }
 
          function rightball(){
-         var canvas=document.getElementById("gameboard");
+         /*var canvas=document.getElementById("gameboard");
          if ((ball.bally <= canvas.height && ball.bally >= 0)  && (ball.ballx <= canvas.width)){
          ball.ballx++;}else{
            dir = 0;
          drawgameboard();
+         */
+          req.open("GET","pong?action = rightball", true); 
+		  req.send();
          }
      }
 
          function leftball(){
+         	/*
          var canvas=document.getElementById("gameboard");
          if ((ball.bally <=  canvas.height && ball.bally >= 0)  && ( ball.ballx >= 0)) { // verifie qu'on est pas au bord
 
@@ -232,7 +238,7 @@
          dir = 1;
          drawgameboard();
          }*/
-          req.open("GET","pong?upball", true); 
+          req.open("GET","pong?action = leftball", true); 
 		  req.send();
      }
        
@@ -277,7 +283,7 @@
           return px1 = px1 - 8;
          }
          else {return px1;}*/
-          req.open("GET","pong?type=leftp", true); 
+          req.open("GET","pong?action=leftp", true); 
 		  req.send();
          }
 
@@ -288,7 +294,7 @@
           return px2 = px2 + 8;
          }
          else {return px2;}*/
-          req.open("GET","pong?type=rightp", true); 
+          req.open("GET","pong?action=rightp", true); 
 		  req.send();
          }
 
