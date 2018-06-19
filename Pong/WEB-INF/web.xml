@@ -1,0 +1,13 @@
+<web-app> 
+  
+<servlet>  
+<servlet-name>pong</servlet-name>  
+<servlet-class>Pong</servlet-class>  
+</servlet>  
+  
+<servlet-mapping>  
+<servlet-name>pong</servlet-name>  
+<url-pattern>/Pong</url-pattern>  
+</servlet-mapping>  
+  
+</web-app>  

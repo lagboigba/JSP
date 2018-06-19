@@ -1,0 +1,465 @@
+
+
+<!DOCTYPE html>
+<html>
+   <head>
+      <title> Arkanoid!</title>
+      <meta charset="UTF-8">
+   </head>
+   <body>
+      <script>
+         var dir; //Left or right for ball
+         var axe = 1; //up or down for ball
+         var scoreA = 1; //score for player A
+         var scoreB = 1; //score for player B
+         var vit = []; //Speed incrementation
+         var speed = 20;
+         var lancement = []; //Gamestart
+         var center = 0;
+         var canvas;
+        
+         var brick_count =-1;
+         var lives = 0;
+         var brickBreak =0;
+        
+        
+         window.onload = setgameboard;
+        
+		var req;
+
+		window.onload = init;
+
+		function init() {
+			setInterval(update, 300);
+		}
+
+		function update(){
+			req = new window.XMLHttpRequest();
+			req.open("GET","pong",true);
+			req.send();
+			req.onload = refresh;
+		}
+		function refresh(){
+		var test = StringToXMLDom(req.response);
+			 var canvas=document.getElementById("gameboard");
+		         if(!canvas.getContext){return;}
+		         var ctx=canvas.getContext("2d");
+		         var rect = canvas.getBoundingClientRect();         
+		         var i=0;
+		         var expr;
+		 ctx.clearRect(0, 0, canvas.width, canvas.height);
+		var docXML= req.response;
+		var actions = test.getElementsByTagName("action");
+
+		if(docXML != null)
+			
+
+
+/*<Pongstate width="500" height="500"> <ball ballX="267.75390625" ballY="204.51171875" axe="1" dir="1"></ball>  
+<player1 color="red" left="267.75390625" top="204.51171875" right="393.75390625" bottom="297.51171875"></player1>
+<player2 color="blue" left="267.75390625" top="204.51171875" right="393.75390625" bottom="297.51171875"></player2>  </Pongstate>
+*/
+        
+
+
+        
+
+        // for(i; i < xmlDoc.getElementsByTagName("Pongstate")[0].children.length; i++){
+         ballinfos = xmlDoc.getElementsByTagName("ball");
+         ball.ballx = ballinfos.getAttribute("ballX");
+         ball.bally = ballinfos.getAttribute("ballY");
+         axe = ballinfos.getAttribute("axe");
+         dir = ballinfos.getAttribute("dir");
+
+
+
+		 player1infos = xmlDoc.getElementsByTagName("player1");
+		 player1.px = player1infos.getAttribute("")
+		 player1.py = player1infos.getAttribute("")
+		 player1.pheigh = player1infos.getAttribute("")
+		 player1.pwidth = player1infos.getAttribute("")
+
+
+         player2infos = xmlDoc.getElementsByTagName("player2");
+         player2.px = player2infos.getAttribute("")
+		 player2.py = player2infos.getAttribute("")
+		 player2.pheigh = player2infos.getAttribute("")
+		 player2.pwidth = player2infos.getAttribute("")
+
+
+
+         setgameboard();
+         drawgameboard();
+	}
+         //Player prototype
+         function Player(px, py) {
+         this.px = px;
+         this.py = py;
+         this.pheigh = 50;
+         this.pwidth = 5;
+
+         }
+
+
+         var player1 = new Player(80,400);
+         var player2 = new Player(80,400);
+
+         //Ball object
+         var ball = new Object();
+         ball.ballx = player2.px+25;
+         ball.bally = player2.py-15;
+         ball.speed = 1;
+
+         //Start object
+         var startcoord = new Object();
+         startcoord.x = 0;
+         startcoord.y = 0;
+
+         //End object
+         var endcoord = new Object();
+         endcoord.x = 0;
+         endcoord.y = 0;
+       
+         function setgameboard(){
+         var canvas=document.getElementById("gameboard");
+         if(!canvas.getContext){return;}
+         var ctx=canvas.getContext("2d");
+         ctx.fillStyle = "black";
+
+         ctx.clearRect(0,0,canvas.width,canvas.height);
+
+         ctx.fillRect(0,0,canvas.width,canvas.height);
+
+         }
+
+         function drawgameboard(){
+         var canvas=document.getElementById("gameboard");
+         if(!canvas.getContext){return;}
+
+         var ctx=canvas.getContext("2d");
+
+         // Ball
+         ctx.fillStyle = "#3370d4";
+         ctx.beginPath();
+
+         ctx.arc(ball.ballx,ball.bally,5,0,2*Math.PI,true);
+         ctx.fill();
+         ctx.stroke();
+
+         //Player 1
+         ctx.fillStyle = "#059F90";
+         ctx.clearRect(player1.px,player1.py,player1.pheigh,player1.pwidth);
+         ctx.fillRect(player1.px,player1.py,player1.pheigh,player1.pwidth);
+         ctx.stroke();
+
+         //Player 2
+         ctx.fillStyle = "#279890";
+         ctx.clearRect(player2.px,player2.py,player2.pheigh,player2.pwidth);
+         ctx.fillRect(player2.px,player2.py,player2.pheigh,player2.pwidth);
+         ctx.stroke();
+         ctx.fillStyle = "black";
+         }
+       
+
+         function downball(){
+         var canvas=document.getElementById("gameboard");
+         var ctx=canvas.getContext("2d");
+           //Modifier les endroits de la raquettes oÃ¹ on augmente la vitesse
+/*         if (ball.bally < canvas.height){
+           ball.bally++;
+         }
+         if(ball.bally == player2.py-5){
+           if((ball.ballx >= player2.px+15) && (ball.ballx <= player2.px+35)){
+            center =  0;
+            axe = 1;
+            // clearInterval(vit);
+            drawgameboard();
+          }
+          else if((ball.ballx >= player2.px-2 & ball.ballx < player2.px+15) || (ball.ballx <= player2.px+52 & ball.ballx > player2.px+35)){
+           if (ball.ballx >= player2.px-2 & ball.ballx < player2.px+15){
+             center = 1;
+             dir = 0;
+              drawgameboard();
+           }
+           if (ball.ballx <= player2.px+52 & ball.ballx > player2.px+35){
+             center = 1;
+             dir = 1;
+              drawgameboard();
+           }
+           vit.push (setInterval(move,speed)) ;
+           ball.speed +=1;
+           axe = 1;
+           drawgameboard();
+         }
+         else{
+         ctx.fillStyle = "black";
+         ctx.arc(ball.ballx,ball.bally,5,0,2*Math.PI,true);
+         ctx.fill();
+           renitPosition();
+           var Liveslost = document.getElementById("lives");
+           lives++;
+           Liveslost.value = lives;
+
+         }
+         }*/
+         //Rajouter les elements manquants
+         req.open("GET","pong?", true); 
+				req.send();
+
+         }
+
+
+         function upball(){
+       /*  var canvas=document.getElementById("gameboard");
+         if (ball.bally > 0){
+         ball.bally--;
+         }
+         else{
+          axe = 0;
+          drawgameboard();
+         }
+         }
+
+         function rightball(){
+         var canvas=document.getElementById("gameboard");
+         if ((ball.bally <= canvas.height && ball.bally >= 0)  && (ball.ballx <= canvas.width)){
+         ball.ballx++;}else{
+           dir = 0;
+         drawgameboard();
+         }
+     }
+
+         function leftball(){
+         var canvas=document.getElementById("gameboard");
+         if ((ball.bally <=  canvas.height && ball.bally >= 0)  && ( ball.ballx >= 0)) { // verifie qu'on est pas au bord
+
+         ball.ballx--;
+         }
+         else{
+         dir = 1;
+         drawgameboard();
+         }*/
+          req.open("GET","pong?", true); 
+		  req.send();
+     }
+       
+         //Ball movement
+         function move(){
+
+           drawgameboard();
+           
+         if (center){
+           if(dir) rightball(); else leftball();
+         }
+
+         if(axe) upball(); else downball();
+           
+
+         }
+        
+
+         function startball() {
+       for (var l=0; l < vit.length; l++) {
+        clearInterval(vit[l]);
+    }          
+         }
+
+         function renitPosition(){
+         ball.ballx = Math.floor(Math.random() * 400) + 10;
+         ball.bally = 210;
+         center = 0;
+         axe = Math.round(Math.random());
+         startball();
+         gamestop();
+         gamestart();
+         ball.speed = 1;
+         }
+
+
+         //Player movement
+         function leftp(px1){
+         	// A passer coté JAVA
+/*         var canvas=document.getElementById("gameboard");
+         if(px1 > 8 ){
+          return px1 = px1 - 8;
+         }
+         else {return px1;}*/
+          req.open("GET","pong?", true); 
+		  req.send();
+         }
+
+         function rightp(px2){
+         	         	// A passer coté JAVA
+/*         var canvas=document.getElementById("gameboard");
+         if(px2 < canvas.width - 8){
+          return px2 = px2 + 8;
+         }
+         else {return px2;}*/
+          req.open("GET","pong?", true); 
+		  req.send();
+         }
+
+
+
+         // 2 players can play
+         window.addEventListener("keydown", keysPressed, false);
+         window.addEventListener("keyup", keysReleased, false);
+
+         var keys = [];
+
+         function keysPressed(e) {
+         var canvas=document.getElementById("gameboard");
+         if(!canvas.getContext){return;}
+         var ctx=canvas.getContext("2d");
+
+         // store an entry for every key pressed
+         keys[e.keyCode] = true;
+
+         ctx.fillStyle = "black";
+         ctx.clearRect(player2.px,player2.py,player2.pheigh,player2.pwidth);
+         ctx.fillRect(player2.px,player2.py,player2.pheigh,player2.pwidth);
+         ctx.stroke();
+
+         if (keys[37]) {
+/*           player2.px = leftp(player2.px);
+           drawgameboard();*/
+          req.open("GET","pong?", true); 
+		  req.send();
+         }
+         if (keys[39]) {
+/*           player2.px = rightp(player2.px);
+
+           drawgameboard();*/
+          req.open("GET","pong?", true); 
+		  req.send();
+         }
+
+         }
+
+         function keysReleased(e) {
+         // mark keys that were released
+         keys[e.keyCode] = false;
+         }
+
+
+         //Permet d'arreter le jeu
+         function gamestop(){
+           
+     for (var k=0; k < lancement.length; k++) {
+        clearInterval(lancement[k]);
+    }  
+             for (var l=0; l < vit.length; l++) {
+        clearInterval(vit[l]);
+    }          
+         }
+
+
+         //Lancement jeu
+         function gamestart(){
+
+           lancement.push(setInterval(move,20));
+
+
+         }
+
+
+             /-----------------------------------------------------------------------------------/
+
+
+         function readXMLfile(){
+
+         var xhttp = new XMLHttpRequest();
+         xhttp.onreadystatechange = function() {
+
+         if (this.readyState == 4 && this.status == 200) {
+         navigatesNodesXML(this);
+         }
+         };
+         // C'est ici qu'on met le nom du fichier XML
+
+         xhttp.open("GET", document.getElementById("XMLLoad").value, true);
+         xhttp.send();
+
+         }
+         /-----------------------------------------------------------------------------------/
+
+/*         function navigatesNodesXML(xml){
+
+         var canvas=document.getElementById("gameboard");
+         if(!canvas.getContext){return;}
+         var ctx=canvas.getContext("2d");
+         var rect = canvas.getBoundingClientRect();
+
+         var x, y, xmlDoc;
+         xmlDoc = xml.responseXML;
+         var i=0;
+         var expr;
+
+/*<Pongstate width="500" height="500"> <ball color="red" ballX="267.75390625" ballY="204.51171875" pos="axe"></ball>  
+<player1 color="red" left="267.75390625" top="204.51171875" right="393.75390625" bottom="297.51171875"></player1>
+<player2 color="red" left="267.75390625" top="204.51171875" right="393.75390625" bottom="297.51171875"></player2>  </Pongstate>
+*/
+/*         document.getElementById("gameboard").width = xmlDoc.getElementsByTagName("arkanoidlevel")[0].getAttribute("width");
+
+         document.getElementById("gameboard").height = xmlDoc.getElementsByTagName("arkanoidlevel")[0].getAttribute("height");
+       
+        
+         player2 = new Player(canvas.width*0.3, canvas.height-10);
+         ball.ballx = player2.px+25;
+         ball.bally = player2.py-8;
+         ball.speed = 1;
+
+         setgameboard();
+         drawgameboard();
+        brick_count = 0;
+        
+
+         for(i; i < xmlDoc.getElementsByTagName("arkanoidlevel")[0].children.length; i++){
+         x = xmlDoc.getElementsByTagName("arkanoidlevel")[0].children[i];
+         startcoord.x = x.getAttribute("left");
+         startcoord.y = x.getAttribute("top");
+
+         ctx.strokeStyle = x.getAttribute("color");
+         ctx.beginPath();
+
+         endcoord.x = x.getAttribute("right");
+         endcoord.y = x.getAttribute("bottom");
+
+         var length = endcoord.x  - startcoord.x;
+         var width = endcoord.y - startcoord.y;
+*/
+        //Fonction
+         }
+
+
+
+    
+      </script>
+      Arkanoid!
+      <br/>
+      <canvas id="gameboard" width="410" height="410" > This is not supported!</canvas>
+      <br />
+      <input type="button" value="Start" onclick="gamestart();" />
+      <input type="button" value="Pause" onclick="gamestop();" />
+      <br/>
+      Statistics
+      <table style="width:50%">
+         <tr>
+            <td>Lives lost</td>
+            <td><input type="text" id="lives" readonly="readonly" value=0></td>
+         </tr>
+         <tr>
+            <td>Bricks remaining</td>
+            <td><input type="text" id="bricksr" value=0 readonly="readonly"></td>
+         </tr>
+         <tr>
+            <td>
+               Level file
+               <input type="text" id="XMLLoad">
+               <br>
+               <input type="button" value="Load" onclick="readXMLfile();" />
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>
