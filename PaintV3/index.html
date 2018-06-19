@@ -90,6 +90,9 @@
 		    ctx.lineWidth = actions[i].getAttribute("lineWidth");
 		    endcoord.x = actions[i].getAttribute("endX");
 		    endcoord.y = actions[i].getAttribute("endY");
+		    
+		  
+		    
         if (!pieceundo.includes(id)){
 		        switch (expr) {
 		      case 'rect':
@@ -99,6 +102,9 @@
 		        ctx.rect(startcoord.x,startcoord.y, length,width);
 		        ctx.stroke();
 		        ctx.closePath();
+		        if(actions[i].getAttribute("finishDraw") == "vrai"){
+		        	//piececreated.push("rect" +  startcoord.x + startcoord.y + endcoord.x + endcoord.y);   
+			    }
 
 		       break;
 		      case 'circle':
@@ -109,10 +115,9 @@
 		  ctx.arc(startcoord.x,startcoord.y, Math.abs(rad),0,2*Math.PI);
 		  ctx.stroke();
 		  ctx.closePath();
-		  if(startcoord.x === "1"){
-		  alert("fdp");
-		  }
-
+    if(actions[i].getAttribute("finishDraw")== "vrai"){
+    	//piececreated.push("circle" +  startcoord.x + startcoord.y + endcoord.x + endcoord.y);   
+		    }
 		      break;
 		    case 'line':
 		        ctx.beginPath();
@@ -120,11 +125,14 @@
 		      ctx.lineTo(endcoord.x, endcoord.y);
 		      ctx.stroke();
 		      ctx.closePath();
-
+		      if(actions[i].getAttribute("finishDraw") == "vrai"){
+		    	 // piececreated.push("line" +  Math.round(startcoord.x) + Math.round(startcoord.y) + Math.round(endcoord.x) + Math.round(endcoord.y)); 
+			    }
 		        break;
 		    default:
 
 		}
+
 		  }
       }
 		}
@@ -137,12 +145,14 @@
 			}
 
 			//Board
-			var ctx = canvas.getContext("2d");
-			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			
 
 			var req = new window.XMLHttpRequest();
 			req.open("GET", "paint?clear=1", true);
 			req.send()
+			var ctx = canvas.getContext("2d");
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+	
 		}
 		/-----------------------------------------------------------------------------------/
 
@@ -206,12 +216,13 @@
 								+ document.getElementById("color").value
 								+ "&lineWidth="
 								+ document.getElementById("Thick").value
-								+ "&type=line&startX=" + startcoord.x
-								+ "&startY=" + startcoord.y + "&endX="
-								+ endcoord.x + "&endY=" +endcoord.y
+								+ "&type=line&startX=" + Math.round(startcoord.x)
+								+ "&startY=" + Math.round(startcoord.y) + "&endX="
+								+ Math.round(endcoord.x) + "&endY=" +Math.round(endcoord.y)
                 + "&id=line" +   Math.round(startcoord.x) + Math.round(startcoord.y) + Math.round(endcoord.x) + Math.round(endcoord.y), true); 
 				req.send();
       piececreated.push("line" +  Math.round(startcoord.x) + Math.round(startcoord.y) + Math.round(endcoord.x) + Math.round(endcoord.y)); 
+      
 			}
 
 			if (booleanCircle) {
@@ -456,12 +467,26 @@
 			}
 		}
     /-----------------------------------------------------------------------------------/
-        function Undo() {      
-         pieceundo.push(piececreated.pop());
+        function Undo() {
+    	
+    	var stockPiece = piececreated.pop();
+    	var req = new window.XMLHttpRequest();
+
+		req.open("GET", "paint?undo="+stockPiece, true); 
+		req.send();
+         pieceundo.push(stockPiece);
     }
     /-----------------------------------------------------------------------------------/
         function Redo() {      
-         piececreated.push(pieceundo.pop());
+    	
+        // piececreated.push(pieceundo.pop());
+     	var stockPiece = pieceundo.pop();
+    	var req = new window.XMLHttpRequest();
+
+		req.open("GET", "paint?redo="+stockPiece, true); 
+		req.send();
+		
+		piececreated.push(stockPiece);
     }
 
 
