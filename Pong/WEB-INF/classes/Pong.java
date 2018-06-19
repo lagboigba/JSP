@@ -99,6 +99,20 @@ public class Pong extends HttpServlet {
         if (req.getParameter("action") == "downball") {    
 }
 
+//////////////////////EQUIVALENT DE setInterval(move,20)
+Timer timer = new Timer();
+    TimerTask task = new TimerTask() {
+        public void run()
+        {
+          if (this.center){
+           if(this.dir) rightball(); else leftball();
+         }
+
+         if(this.axe) upball(); else downball();
+           
+        }
+    };
+timer.schedule( task, 0L ,200L);
 
 
 
