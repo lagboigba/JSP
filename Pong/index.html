@@ -18,10 +18,6 @@
          var center = 0;
          var canvas;
         
-         var brick_count =-1;
-         var lives = 0;
-         var brickBreak =0;
-        
         
          window.onload = setgameboard;
         
@@ -76,15 +72,12 @@
 		 player1infos = xmlDoc.getElementsByTagName("player1");
 		 player1.px = player1infos.getAttribute("")
 		 player1.py = player1infos.getAttribute("")
-		 player1.pheigh = player1infos.getAttribute("")
-		 player1.pwidth = player1infos.getAttribute("")
+
 
 
          player2infos = xmlDoc.getElementsByTagName("player2");
          player2.px = player2infos.getAttribute("")
 		 player2.py = player2infos.getAttribute("")
-		 player2.pheigh = player2infos.getAttribute("")
-		 player2.pwidth = player2infos.getAttribute("")
 
 
 
@@ -203,7 +196,7 @@
          }
          }*/
          //Rajouter les elements manquants
-         req.open("GET","pong?", true); 
+         req.open("GET","pong?downball", true); 
 				req.send();
 
          }
@@ -239,7 +232,7 @@
          dir = 1;
          drawgameboard();
          }*/
-          req.open("GET","pong?", true); 
+          req.open("GET","pong?upball", true); 
 		  req.send();
      }
        
@@ -284,7 +277,7 @@
           return px1 = px1 - 8;
          }
          else {return px1;}*/
-          req.open("GET","pong?", true); 
+          req.open("GET","pong?type=leftp", true); 
 		  req.send();
          }
 
@@ -295,7 +288,7 @@
           return px2 = px2 + 8;
          }
          else {return px2;}*/
-          req.open("GET","pong?", true); 
+          req.open("GET","pong?type=rightp", true); 
 		  req.send();
          }
 

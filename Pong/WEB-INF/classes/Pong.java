@@ -10,32 +10,36 @@ public class Pong extends HttpServlet {
 
 	public class State {
 
-		private String type;
-		private String startX;
-		private String startY;
-		private String strokeStyle;
-		private String lineWidth;
-		private String endX;
-		private String endY;
-		private String id;
+		private String action;
+		private String ballx;
+		private String bally;
+		private String axe;
+		private String dir;
+		private String center;
+		private String p1_px;
+		private String p1_py;
+		private String p2_px;
+		private String p2_py;
 
-		public State(String type, String startX, String startY, String strokeStyle, String lineWidth, String endX,
-				String endY, String id) {
-			this.type = type;
-			this.startX = startX;
-			this.startY = startY;
-			this.strokeStyle = strokeStyle;
-			this.lineWidth = lineWidth;
-			this.endX = endX;
-			this.endY = endY;
-			this.id = id;
+		public State(String action, String ballx, String bally, String axe, String dir, String center, String p1_px, String p1_py,
+				String p2_px, String p2_py) {
+			this.action = action;
+			this.ballx = ballx;
+			this.bally = bally;
+			this.axe = axe;
+			this.dir = dir;
+			this.center = center;
+			this.p1_px = p1_px;
+			this.p1_py = p1_py;
+			this.p2_px = p2_px;
+			this.p2_py = p2_py;
 		}
 
 		public String xml() {
 
-			return "<action type=\"" + this.type + "\" startX=\"" + this.startX + "\" startY=\"" + this.startY + "\" strokeStyle=\""
-					+ this.strokeStyle + "\" lineWidth=\"" + this.lineWidth + "\" endX=\"" + this.endX + "\" endY=\"" + this.endY + "\" id=\"" + this.id
-					+ "\">" + "</action>";
+			return "<Pongstate> <ball ballX=\"" + this.ballx + "\" ballY=\"" + this.bally + "\" axe=\"" + this.axe + "\" dir=\""
+					+ this.dir + "\" center=\"" + this.center + "\">" + "</ball>"+ "\" <player1 p1_px=\"" + this.p1_px + "\" p1_py=\"" + this.p1_py + "\">" + "</player1>" + "\" <player2> p2_px=\"" + this.p2_px + "\" p2_py=\"" + this.p2_py
+					+ "\" </player2>" + "</Pongstate>";
 		}
 	}
 
@@ -51,6 +55,19 @@ public class Pong extends HttpServlet {
 		String xmlSend ="";
 		String xmlLive ="";
 
+				if (req.getParameter("type") == "leftp") {
+					 if(this.p1_px > 8 ){
+          				this.p1_px = this.p1_px - 8;
+         }
+         				else this.p1_px = this.p1_px;
+     }
+     if (req.getParameter("type") == "rightp") {
+     	 if(this.p1_px < 500 - 8){
+           this.p1_px = this.p1_px + 8;
+         }
+         else {this.p1_px = this.p1_px;
+         }
+
 
 			State1 = new Form(req.getParameter("type"), req.getParameter("startX"), req.getParameter("startY"),
 					req.getParameter("strokeStyle"), req.getParameter("lineWidth"), req.getParameter("endX"),
@@ -65,11 +82,11 @@ public class Pong extends HttpServlet {
 */
 		
 		pw.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-		pw.println("<Pongstate>");
+//		pw.println("<Pongstate>");
 
 		pw.println(State1.xml());
 		
-		pw.println("</Pongstate>");
+//		pw.println("</Pongstate>");
 		
 		pw.flush();
 		pw.close();
