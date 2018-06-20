@@ -70,14 +70,14 @@
 
 
 		 player1infos = xmlDoc.getElementsByTagName("player1");
-		 player1.px = player1infos.getAttribute("")
-		 player1.py = player1infos.getAttribute("")
+		 player1.px = player1infos.getAttribute("p1_px")
+		 player1.py = player1infos.getAttribute("p1_py")
 
 
 
          player2infos = xmlDoc.getElementsByTagName("player2");
-         player2.px = player2infos.getAttribute("")
-		 player2.py = player2infos.getAttribute("")
+         player2.px = player2infos.getAttribute("p2_px")
+		 player2.py = player2infos.getAttribute("p2_py")
 
 
 
@@ -139,18 +139,18 @@
          ctx.fill();
          ctx.stroke();
 
-         //Player 1
-         ctx.fillStyle = "#059F90";
-         ctx.clearRect(player1.px,player1.py,50,5);
-         ctx.fillRect(player1.px,player1.py,50,5);
-         ctx.stroke();
+  //Player 1
+  ctx.fillStyle = "#c2b675"; 
+  ctx.clearRect(player1.px,player1.py,player1.pheigh, player1.pwidth);
+  ctx.fillRect(player1.px, player1.py,player1.pheigh, player1.pwidth);
+  ctx.stroke();
 
-         //Player 2
-         ctx.fillStyle = "#279890";
-         ctx.clearRect(player2.px,player2.py,50,5);
-         ctx.fillRect(player2.px,player2.py,50,5);
-         ctx.stroke();
-         ctx.fillStyle = "black";
+  //Player 2
+  ctx.fillStyle = "#279890";
+  ctx.clearRect(player2.px,player2.py,player2.pheigh,player2.pwidth);
+  ctx.fillRect(player2.px,player2.py,player2.pheigh,player2.pwidth);
+  ctx.stroke();
+
          }
        
 /// A Deplaceer uniquement coté java
@@ -158,11 +158,11 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////
-         function downball(){
+/*         function downball(){
          var canvas=document.getElementById("gameboard");
          var ctx=canvas.getContext("2d");
            //Modifier les endroits de la raquettes oÃ¹ on augmente la vitesse
-/*         if (ball.bally < canvas.height){
+         if (ball.bally < canvas.height){
            ball.bally++;
          }
          if(ball.bally == player2.py-5){
@@ -198,41 +198,41 @@
            Liveslost.value = lives;
 
          }
-         }*/
+         }
          //Rajouter les elements manquants
          req.open("GET","pong?action=downball", true); 
 				req.send();
 
-         }
+         }*/
 
 
-         function upball(){
-       /*  var canvas=document.getElementById("gameboard");
+/*         function upball(){
+         var canvas=document.getElementById("gameboard");
          if (ball.bally > 0){
          ball.bally--;
          }
          else{
           axe = 0;
           drawgameboard();
-         }*/
+         }
           req.open("GET","pong?action = upball", true); 
 		  req.send();
-         }
+         }*/
 
-         function rightball(){
-         /*var canvas=document.getElementById("gameboard");
+/*         function rightball(){
+         var canvas=document.getElementById("gameboard");
          if ((ball.bally <= canvas.height && ball.bally >= 0)  && (ball.ballx <= canvas.width)){
          ball.ballx++;}else{
            dir = 0;
          drawgameboard();
-         */
+         
           req.open("GET","pong?action = rightball", true); 
 		  req.send();
          }
-     }
+     }*/
 
-         function leftball(){
-         	/*
+/*         function leftball(){
+         	
          var canvas=document.getElementById("gameboard");
          if ((ball.bally <=  canvas.height && ball.bally >= 0)  && ( ball.ballx >= 0)) { // verifie qu'on est pas au bord
 
@@ -241,13 +241,13 @@
          else{
          dir = 1;
          drawgameboard();
-         }*/
+         }
           req.open("GET","pong?action = leftball", true); 
 		  req.send();
-     }
+     }*/
        
          //Ball movement
-         function move(){
+/*         function move(){
 
            drawgameboard();
            
@@ -258,16 +258,16 @@
          if(axe) upball(); else downball();
            
 
-         }
+         }*/
         
 
-         function startball() {
+/*         function startball() {
        for (var l=0; l < vit.length; l++) {
         clearInterval(vit[l]);
     }          
-         }
+         }*/
 
-         function renitPosition(){
+/*         function renitPosition(){
          ball.ballx = Math.floor(Math.random() * 400) + 10;
          ball.bally = 210;
          center = 0;
@@ -276,7 +276,7 @@
          gamestop();
          gamestart();
          ball.speed = 1;
-         }
+         }*/
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 
@@ -441,31 +441,34 @@
 
     
       </script>
-      Arkanoid!
-      <br/>
-      <canvas id="gameboard" width="410" height="410" > This is not supported!</canvas>
-      <br />
-      <input type="button" value="Start" onclick="gamestart();" />
-      <input type="button" value="Pause" onclick="gamestop();" />
-      <br/>
-      Statistics
-      <table style="width:50%">
-         <tr>
-            <td>Lives lost</td>
-            <td><input type="text" id="lives" readonly="readonly" value=0></td>
-         </tr>
-         <tr>
-            <td>Bricks remaining</td>
-            <td><input type="text" id="bricksr" value=0 readonly="readonly"></td>
-         </tr>
-         <tr>
-            <td>
-               Level file
-               <input type="text" id="XMLLoad">
-               <br>
-               <input type="button" value="Load" onclick="readXMLfile();" />
-            </td>
-         </tr>
-      </table>
-   </body>
+Pong! 
+<br/>
+
+<canvas id="gameboard" width="410" height="410" > This is not supported!</canvas> <br />
+<input type="button" value="Start" onclick="gamestart();" />
+<input type="button" value="Stop" onclick="gamestop();" />
+<br/>
+Statistic 
+<table style="width:50%">
+  <tr>
+    <td>Yellow wins</td>
+    <td><input type="text" id="Resultgreen" value = 0 readonly="readonly"></td>
+  </tr>
+  <tr>
+    <td>Green wins</td>
+    <td><input type="text" id="Resultred" value = 0 readonly="readonly"></td>
+  </tr>
+  <tr>
+    <td>X speed</td>
+    <td><input type="text" id="speedx" value=0 readonly="readonly"></td>
+  </tr>
+    <tr>
+    <td>Y speed</td>
+    <td><input type="text" id="speedy" value=0 readonly="readonly"></td>
+  </tr>
+   <tr>
+    <td>ball speed</td>
+    <td><input type="text" id="speedb" value=0 readonly="readonly"></td>
+</table>
+</body>
 </html>

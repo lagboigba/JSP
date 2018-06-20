@@ -9,6 +9,12 @@ public class Pong extends HttpServlet {
 	public State State1 = null;
 
 	public class State {
+//////////////////////////
+			if(req.getParameter("player")!=null)
+			s.setAttribute(player,req.getParameter(player));
+
+
+		///////////////
 
 		private String action;
 		private String ballx;
@@ -55,6 +61,8 @@ public class Pong extends HttpServlet {
 		String xmlSend ="";
 		String xmlLive ="";
 
+
+/////////////////Player movement
 				if (req.getParameter("action") == "leftp") {
 					 if(this.p1_px > 8 ){
           				this.p1_px = this.p1_px - 8;
@@ -63,22 +71,37 @@ public class Pong extends HttpServlet {
      }
  }
      if (req.getParameter("action") == "rightp") {
-     	 if(this.p1_px < 500 - 8){
+     	 if(this.p1_px < 410 - 8){
            this.p1_px = this.p1_px + 8;
          }
          else {this.p1_px = this.p1_px;
          }
      }
-       if (req.getParameter("action") == "upball") {         
-              if (this.bally > 0){
-         this.bally--;
-         }
-         else{
-          this.axe = 0;
-     }
-          }
-       if (req.getParameter("action") == "leftball") {    
-       if ((this.bally <= 500 && this.bally >= 0)  && ( this.ballx >= 0)) { // verifie qu'on est pas au bord
+
+////////////////// Ball movement     
+public static void upball(){         
+if (this.bally > 20){
+  this.bally--;
+    }
+  if(this.bally == this.p1_py+10){
+if((this.ballx >= this.p1_px+10) && (this.ballx <= this.p1_px+40)){
+    	this.axe = 0;
+    	}
+        else if((this.ballx >= this.p1_px-2 & this..ballx < this.p1_px+10) || (this.ballx <= this.p1_px+52 & ball.ballx > this.p1_px+40)){
+            	axe = 0;
+            	//Speed
+        }
+        else{
+      renitPosition();
+        scoreB++;
+        }
+    }
+}
+
+
+
+public static void leftball(){      
+       if ((this.bally <= 410 && this.bally >= 0)  && ( this.ballx >= 0)) { // verifie qu'on est pas au bord
 
          this.ballx--;
          }
@@ -86,8 +109,8 @@ public class Pong extends HttpServlet {
          this.dir = 1;
      }
  }
-        if (req.getParameter("action") == "rightball") {    
-         if ((this.bally <=  500 && this.bally >= 0)  && ( this.ballx >= 0)) { // verifie qu'on est pas au bord
+public static void rightball(){      
+         if ((this.bally <=  410 && this.bally >= 0)  && ( this.ballx >= 0)) { // verifie qu'on est pas au bord
 
          this.ballx--;
          }
@@ -96,8 +119,34 @@ public class Pong extends HttpServlet {
  }
 }
 
-        if (req.getParameter("action") == "downball") {    
+public static void downball(){  
+        if (this.bally < 410){
+           this.bally++;
+         }
+           if(this.bally == this.p2_py-5){
+if((this.ballx >= this.p2_px+10) && (this.ballx <= this.p2_px+40)){
+    	axe = 1;
+    	}
+        else if((this.ballx >= this.p2_px-2 & this.ballx < this.p2_px+10) || (this.ballx <= this.p2_px+52 & this.ballx > this.p2_px+40)){
+            	axe = 1;
+            	//Speed
+        }
+        else{
+      renitPosition();
+        scoreA++;
+        }
+    }
+
+    
 }
+
+public static void renitPosition(){  
+         this.ballx = Math.floor(Math.random() * 400) + 10;
+         ball.bally = 210;
+         this.center = 0;
+         this.axe = Math.round(Math.random());
+         startball();
+         }
 
 //////////////////////EQUIVALENT DE setInterval(move,20)
 Timer timer = new Timer();
@@ -117,11 +166,11 @@ timer.schedule( task, 0L ,200L);
 
 
 
+
 			State1 = new Form(req.getParameter("type"), req.getParameter("startX"), req.getParameter("startY"),
 					req.getParameter("strokeStyle"), req.getParameter("lineWidth"), req.getParameter("endX"),
 					req.getParameter("endY"), req.getParameter("id"));
-			System.out.println(req.getParameter("endDraw")+"??????????????????????????");
-
+		
 		
 		//Test XML a retourner
 /*<Pongstate width="500" height="500"> <ball ballX="267.75390625" ballY="204.51171875" axe="1" dir="1"></ball>  
