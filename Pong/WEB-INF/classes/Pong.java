@@ -79,23 +79,23 @@ public class Pong extends HttpServlet {
          }
          else {this.p1_px = this.p1_px;
          }
-     }
+     };
 
 ////////////////// Ball movement     
-public static void upball(State stateac){      
-if (this.bally > 20){
-  this.bally--;
+public void upball(State stateac){      
+if (stateac.bally > 20){
+  stateac.bally--;
     }
-  if(this.bally == this.p1_py+10){
-if((this.ballx >= this.p1_px+10) && (this.ballx <= this.p1_px+40)){
-    	this.axe = 0;
+  if(stateac.bally == stateac.p1_py+10){
+if((stateac.ballx >= stateac.p1_px+10) && (stateac.ballx <= stateac.p1_px+40)){
+    	stateac.axe = 0;
     	}
-        else if((this.ballx >= this.p1_px-2 & this..ballx < this.p1_px+10) || (this.ballx <= this.p1_px+52 & ball.ballx > this.p1_px+40)){
+        else if((stateac.ballx >= stateac.p1_px-2 & stateac.ballx < stateac.p1_px+10) || (stateac.ballx <= stateac.p1_px+52 & stateac.ballx > stateac.p1_px+40)){
             	axe = 0;
             	//Speed
         }
         else{
-      renitPosition(this);
+      renitPosition(stateac);
         scoreB++;
         }
     }
@@ -103,39 +103,39 @@ if((this.ballx >= this.p1_px+10) && (this.ballx <= this.p1_px+40)){
 
 
 
-public static void leftball(State stateac){      
-       if ((this.bally <= 410 && this.bally >= 0)  && ( this.ballx >= 0)) { // verifie qu'on est pas au bord
+public  void leftball(State stateac){      
+       if ((stateac.bally <= 410 && stateac.bally >= 0)  && ( stateac.ballx >= 0)) { // verifie qu'on est pas au bord
 
-         this.ballx--;
+         stateac.ballx--;
          }
          else{
-         this.dir = 1;
+         stateac.dir = 1;
      }
  }
-public static void rightball(State stateac){      
-         if ((this.bally <=  410 && this.bally >= 0)  && ( this.ballx >= 0)) { // verifie qu'on est pas au bord
+public void rightball(State stateac){      
+         if ((stateac.bally <=  410 && stateac.bally >= 0)  && ( stateac.ballx >= 0)) { // verifie qu'on est pas au bord
 
-         this.ballx--;
+         stateac.ballx--;
          }
          else{
-         this.dir = 1;
+         stateac.dir = 1;
  }
 }
 
-public static void downball(State stateac){  
-        if (this.bally < 410){
-           this.bally++;
+public void downball(State stateac){  
+        if (stateac.bally < 410){
+           stateac.bally++;
          }
-           if(this.bally == this.p2_py-5){
-if((this.ballx >= this.p2_px+10) && (this.ballx <= this.p2_px+40)){
+           if(stateac.bally == stateac.p2_py-5){
+if((stateac.ballx >= stateac.p2_px+10) && (stateac.ballx <= stateac.p2_px+40)){
     	axe = 1;
     	}
-        else if((this.ballx >= this.p2_px-2 & this.ballx < this.p2_px+10) || (this.ballx <= this.p2_px+52 & this.ballx > this.p2_px+40)){
+        else if((stateac.ballx >= stateac.p2_px-2 & stateac.ballx < stateac.p2_px+10) || (stateac.ballx <= stateac.p2_px+52 & stateac.ballx > stateac.p2_px+40)){
             	axe = 1;
             	//Speed
         }
         else{
-      renitPosition(this);
+      renitPosition(stateac);
         scoreA++;
         }
     }
@@ -143,11 +143,11 @@ if((this.ballx >= this.p2_px+10) && (this.ballx <= this.p2_px+40)){
     
 }
 
-public static void renitPosition(State stateac){  
-         this.ballx = Math.floor(Math.random() * 400) + 10;
+public void renitPosition(State stateac){  
+         stateac.ballx = Math.floor(Math.random() * 400) + 10;
          ball.bally = 210;
-         this.center = 0;
-         this.axe = Math.round(Math.random());
+         stateac.center = 0;
+         stateac.axe = Math.round(Math.random());
          startball();
          }
 
