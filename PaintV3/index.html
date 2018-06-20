@@ -11,6 +11,7 @@
 		var canvas;
 		var ctx;
 		var imageData;
+		var rotate;
 
     var piececreated  = [];
     var pieceundo  = [];
@@ -84,13 +85,33 @@
 		for(i=0;i<actions.length;i++){
 		    expr = actions[i].getAttribute("type");
        		id = actions[i].getAttribute("id");
+			ctx.strokeStyle = actions[i].getAttribute("strokeStyle");
+		    ctx.lineWidth = actions[i].getAttribute("lineWidth");
+			if (rotate%4==0){
 		    startcoord.x = actions[i].getAttribute("startX");
 		    startcoord.y = actions[i].getAttribute("startY");
-		    ctx.strokeStyle = actions[i].getAttribute("strokeStyle");
-		    ctx.lineWidth = actions[i].getAttribute("lineWidth");
 		    endcoord.x = actions[i].getAttribute("endX");
 		    endcoord.y = actions[i].getAttribute("endY");
-		    
+		    }
+			else if (rotate%==1){
+		    startcoord.y = -actions[i].getAttribute("startX");
+		    startcoord.x = actions[i].getAttribute("startY");
+		    endcoord.y = -actions[i].getAttribute("endX");
+		    endcoord.x = actions[i].getAttribute("endY");
+		    }
+			else if (rotate%==2){
+		    startcoord.x = -actions[i].getAttribute("startX");
+		    startcoord.y = -actions[i].getAttribute("startY");
+		    endcoord.x = -actions[i].getAttribute("endX");
+		    endcoord.y = -actions[i].getAttribute("endY");
+		    }
+			else if (rotate%==3){
+		    startcoord.y = actions[i].getAttribute("startX");
+		    startcoord.x = -actions[i].getAttribute("startY");
+		    endcoord.y = actions[i].getAttribute("endX");
+		    endcoord.x = -actions[i].getAttribute("endY");
+		    }
+		  
 		  
 		    
         if (!pieceundo.includes(id)){
@@ -488,7 +509,30 @@
 		
 		piececreated.push(stockPiece);
     }
+    /-----------------------------------------------------------------------------------/
+		function RotateRight() {      
+    	
+        // piececreated.push(pieceundo.pop());
+     	rotate + 1;
+    	var req = new window.XMLHttpRequest();
 
+		req.open("GET", "paint?rotate="+rotate, true); 
+		req.send();
+		
+		piececreated.push(stockPiece);
+    }
+	    /-----------------------------------------------------------------------------------/
+		function RotateLeft() {      
+    	
+        // piececreated.push(pieceundo.pop());
+     	rotate - 1;
+    	var req = new window.XMLHttpRequest();
+
+		req.open("GET", "paint?rotate="+rotate, true); 
+		req.send();
+		
+		piececreated.push(stockPiece);
+    }
 
 
 		
@@ -537,6 +581,9 @@
         <br>
         <input type="button" value="Undo" onclick="Undo();" />
         <input type="button" value="Redo" onclick="Redo();" />
+		<br>
+		<input type="button" value="Left" onclick="RotateLeft();" />
+		<input type="button" value="Right" onclick="RotateRight();" />
 			</td>
 		</tr>
 
