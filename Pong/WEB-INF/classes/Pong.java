@@ -10,9 +10,6 @@ public class Pong extends HttpServlet {
 
 	public class State {
 //////////////////////////
-			if(req.getParameter("player")!=null)
-			s.setAttribute(player,req.getParameter(player));
-
 
 		///////////////
 
@@ -61,6 +58,11 @@ public class Pong extends HttpServlet {
 		String xmlSend ="";
 		String xmlLive ="";
 
+					if(req.getParameter("player")!=null){
+			s.setAttribute(player,req.getParameter(player));
+}
+
+
 
 /////////////////Player movement
 				if (req.getParameter("action") == "leftp") {
@@ -69,8 +71,9 @@ public class Pong extends HttpServlet {
          }
          				else this.p1_px = this.p1_px;
      }
- }
-     if (req.getParameter("action") == "rightp") {
+ 
+
+     if ( req.getParameter("action")== "rightp") {
      	 if(this.p1_px < 410 - 8){
            this.p1_px = this.p1_px + 8;
          }
@@ -79,7 +82,7 @@ public class Pong extends HttpServlet {
      }
 
 ////////////////// Ball movement     
-public static void upball(){         
+public static void upball(State stateac){      
 if (this.bally > 20){
   this.bally--;
     }
@@ -92,7 +95,7 @@ if((this.ballx >= this.p1_px+10) && (this.ballx <= this.p1_px+40)){
             	//Speed
         }
         else{
-      renitPosition();
+      renitPosition(this);
         scoreB++;
         }
     }
@@ -100,7 +103,7 @@ if((this.ballx >= this.p1_px+10) && (this.ballx <= this.p1_px+40)){
 
 
 
-public static void leftball(){      
+public static void leftball(State stateac){      
        if ((this.bally <= 410 && this.bally >= 0)  && ( this.ballx >= 0)) { // verifie qu'on est pas au bord
 
          this.ballx--;
@@ -109,7 +112,7 @@ public static void leftball(){
          this.dir = 1;
      }
  }
-public static void rightball(){      
+public static void rightball(State stateac){      
          if ((this.bally <=  410 && this.bally >= 0)  && ( this.ballx >= 0)) { // verifie qu'on est pas au bord
 
          this.ballx--;
@@ -119,7 +122,7 @@ public static void rightball(){
  }
 }
 
-public static void downball(){  
+public static void downball(State stateac){  
         if (this.bally < 410){
            this.bally++;
          }
@@ -132,7 +135,7 @@ if((this.ballx >= this.p2_px+10) && (this.ballx <= this.p2_px+40)){
             	//Speed
         }
         else{
-      renitPosition();
+      renitPosition(this);
         scoreA++;
         }
     }
@@ -140,7 +143,7 @@ if((this.ballx >= this.p2_px+10) && (this.ballx <= this.p2_px+40)){
     
 }
 
-public static void renitPosition(){  
+public static void renitPosition(State stateac){  
          this.ballx = Math.floor(Math.random() * 400) + 10;
          ball.bally = 210;
          this.center = 0;
@@ -154,14 +157,14 @@ Timer timer = new Timer();
         public void run()
         {
           if (this.center){
-           if(this.dir) rightball(); else leftball();
+           if(this.dir) rightball(this); else leftball(this);
          }
 
-         if(this.axe) upball(); else downball();
+         if(this.axe) upball(this); else downball(this);
            
         }
     };
-timer.schedule( task, 0L ,200L);
+timer.schedule(task, 0L ,200L);
 
 
 
@@ -173,9 +176,9 @@ timer.schedule( task, 0L ,200L);
 		
 		
 		//Test XML a retourner
-/*<Pongstate width="500" height="500"> <ball ballX="267.75390625" ballY="204.51171875" axe="1" dir="1"></ball>  
-<player1 color="red" left="267.75390625" top="204.51171875" right="393.75390625" bottom="297.51171875"></player1>
-<player2 color="blue" left="267.75390625" top="204.51171875" right="393.75390625" bottom="297.51171875"></player2>  </Pongstate>
+/*<Pongstate> <ball ballX="267.75390625" ballY="204.51171875" axe="1" dir="1" center= "1"></ball>  
+<player1 p1_px="267.75390625" p2_px="204.51171875"></player1>
+<player2 p2_px"267.75390625" p2_py="204.51171875"></player2>  </Pongstate>
 */
 		
 		pw.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");

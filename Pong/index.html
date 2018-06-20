@@ -368,25 +368,6 @@
 
          }
 
-
-             /-----------------------------------------------------------------------------------/
-
-
-         function readXMLfile(){
-
-         var xhttp = new XMLHttpRequest();
-         xhttp.onreadystatechange = function() {
-
-         if (this.readyState == 4 && this.status == 200) {
-         navigatesNodesXML(this);
-         }
-         };
-         // C'est ici qu'on met le nom du fichier XML
-
-         xhttp.open("GET", document.getElementById("XMLLoad").value, true);
-         xhttp.send();
-
-         }
          /-----------------------------------------------------------------------------------/
 
 /*         function navigatesNodesXML(xml){
@@ -445,7 +426,7 @@ Pong!
 <br/>
 
 <canvas id="gameboard" width="410" height="410" > This is not supported!</canvas> <br />
-<input type="button" value="Start" onclick="gamestart();" />
+<input type="button" value="Start" onclick="drawgameboard();" />
 <input type="button" value="Stop" onclick="gamestop();" />
 <br/>
 Statistic 
